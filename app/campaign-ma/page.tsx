@@ -114,7 +114,7 @@ export default function MaCampaignPage() {
         <div className="relative h-[60vh] md:h-auto">
           <ParallaxImage
             src="/images/products/DSC_0235.jpg"
-            alt="Ma Candle"
+            alt="Millennial Ma Candle"
             className="h-full md:h-screen md:sticky md:top-0"
             speed={0.15}
             kenBurns={false}
@@ -282,7 +282,7 @@ export default function MaCampaignPage() {
                 </StaggerItem>
 
                 <StaggerItem>
-                  <h2 className="text-display font-serif mb-4">Ma</h2>
+                  <h2 className="text-display font-serif mb-4">Millennial Ma</h2>
                 </StaggerItem>
 
                 <StaggerItem>
@@ -333,7 +333,7 @@ export default function MaCampaignPage() {
 
           <ScrollReveal delay={0.4}>
             <MagneticButton href="/shop/ma" variant="secondary" size="large">
-              Pre-Order Ma
+              Pre-Order Millennial Ma
             </MagneticButton>
           </ScrollReveal>
         </div>

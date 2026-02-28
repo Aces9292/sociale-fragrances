@@ -4,7 +4,7 @@ export const products: Product[] = [
   // Featured / Special - Y2K Rebrand
   {
     id: 'ma',
-    name: 'Ma',
+    name: 'Millennial Ma',
     slug: 'ma',
     collection: 'special',
     price: 30,

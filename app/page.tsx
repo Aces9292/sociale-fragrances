@@ -154,7 +154,7 @@ export default function HomePage() {
           <div className="relative h-[70vh] md:h-screen">
             <ParallaxImage
               src="/images/campaign/ma-hero-posh.jpg"
-              alt="Ma Candle - Product Shot"
+              alt="Millennial Ma Candle"
               className="h-full"
               speed={0.2}
               kenBurns={false}
@@ -182,7 +182,7 @@ export default function HomePage() {
                 </StaggerItem>
 
                 <StaggerItem>
-                  <h2 className="text-title font-serif mb-8">Ma</h2>
+                  <h2 className="text-title font-serif mb-8">Millennial Ma</h2>
                 </StaggerItem>
 
                 <StaggerItem>
