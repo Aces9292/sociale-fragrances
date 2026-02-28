@@ -23,22 +23,22 @@ export default function ContactPage() {
           <div className="py-xl border-t border-b border-black">
             <p className="text-small uppercase-label mb-sm">Email</p>
             <a
-              href="mailto:hello@socialefragrances.com"
+              href="mailto:info@socialefragrances.com"
               className="text-medium hover:underline underline-offset-4 decoration-2"
             >
-              hello@socialefragrances.com
+              info@socialefragrances.com
             </a>
           </div>
 
           <div className="py-xl">
             <p className="text-small uppercase-label mb-sm">Instagram</p>
             <a
-              href="https://instagram.com/socialefragrances"
+              href="https://instagram.com/SocialeCandles"
               target="_blank"
               rel="noopener noreferrer"
               className="text-medium hover:underline underline-offset-4 decoration-2"
             >
-              @socialefragrances
+              @SocialeCandles
             </a>
           </div>
 

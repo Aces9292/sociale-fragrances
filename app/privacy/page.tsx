@@ -56,7 +56,7 @@ export default function PrivacyPage() {
             <h2 className="text-medium font-serif mb-md">Your Rights</h2>
             <p>
               You may request access to, correction of, or deletion of your personal
-              information at any time. Contact us at hello@socialefragrances.com.
+              information at any time. Contact us at info@socialefragrances.com.
             </p>
           </section>
 
@@ -73,10 +73,10 @@ export default function PrivacyPage() {
             <p>
               Questions about this policy? Email{' '}
               <a
-                href="mailto:hello@socialefragrances.com"
+                href="mailto:info@socialefragrances.com"
                 className="underline underline-offset-4 decoration-2 hover:no-underline"
               >
-                hello@socialefragrances.com
+                info@socialefragrances.com
               </a>
             </p>
           </section>

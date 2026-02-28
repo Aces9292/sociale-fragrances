@@ -80,10 +80,10 @@ export default function TermsPage() {
             <p>
               Questions about these terms? Email{' '}
               <a
-                href="mailto:hello@socialefragrances.com"
+                href="mailto:info@socialefragrances.com"
                 className="underline underline-offset-4 decoration-2 hover:no-underline"
               >
-                hello@socialefragrances.com
+                info@socialefragrances.com
               </a>
             </p>
           </section>

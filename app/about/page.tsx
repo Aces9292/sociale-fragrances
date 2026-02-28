@@ -53,10 +53,10 @@ export default function AboutPage() {
           <p className="pt-xl border-t border-black">
             Questions? Wanna collab? Just want to say hi? 👋<br />
             <a
-              href="mailto:hello@socialefragrances.com"
+              href="mailto:info@socialefragrances.com"
               className="underline underline-offset-4 decoration-2 hover:no-underline"
             >
-              hello@socialefragrances.com
+              info@socialefragrances.com
             </a>
           </p>
 

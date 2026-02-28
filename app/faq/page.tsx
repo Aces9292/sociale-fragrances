@@ -29,12 +29,12 @@ const faqs = [
   {
     question: 'Can I return or exchange?',
     answer:
-      'We accept returns of unopened, unused products within 30 days. Contact us at hello@socialefragrances.com to initiate a return.',
+      'We accept returns of unopened, unused products within 30 days. Contact us at info@socialefragrances.com to initiate a return.',
   },
   {
     question: 'Do you offer wholesale?',
     answer:
-      'Yes. Email hello@socialefragrances.com with your business name and location for wholesale inquiries.',
+      'Yes. Email info@socialefragrances.com with your business name and location for wholesale inquiries.',
   },
   {
     question: 'Are your products vegan?',
@@ -70,7 +70,7 @@ export default function FAQPage() {
           <p className="text-body">
             Still have questions?{' '}
             <a
-              href="mailto:hello@socialefragrances.com"
+              href="mailto:info@socialefragrances.com"
               className="underline underline-offset-4 decoration-2 hover:no-underline"
             >
               Contact us

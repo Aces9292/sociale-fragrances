@@ -56,8 +56,8 @@ export default function CheckoutSuccessPage() {
         {/* Contact */}
         <p className="mt-8 text-sm text-gray-500">
           Questions? Email us at{' '}
-          <a href="mailto:hello@socialefragrances.com" className="underline">
-            hello@socialefragrances.com
+          <a href="mailto:info@socialefragrances.com" className="underline">
+            info@socialefragrances.com
           </a>
         </p>
       </div>
