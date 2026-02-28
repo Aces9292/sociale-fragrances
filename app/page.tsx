@@ -21,8 +21,8 @@ const heroImages = [
     alt: 'Then & Now - Y2K Girl to Mom',
   },
   {
-    src: '/images/campaign/001-y2k-teenage-girl-bedroom-flat-lay-produc.png',
-    alt: 'Y2K Bedroom - Furby & Lip Smackers',
+    src: '/images/campaign/sociale-ma-real-y2k.jpg',
+    alt: 'SOCIALE Ma Candle - Y2K Nostalgia with Furbys',
   },
   {
     src: '/images/campaign/001-millennial-mom-nightstand-product-photog.png',
