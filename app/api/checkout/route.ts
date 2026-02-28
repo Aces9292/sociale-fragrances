@@ -48,8 +48,8 @@ export async function POST(request: Request) {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: successUrl || `${request.headers.get('origin')}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: cancelUrl || `${request.headers.get('origin')}/cart`,
+      success_url: successUrl || `https://socialefragrances.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl || `https://socialefragrances.com/cart`,
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
