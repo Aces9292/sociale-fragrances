@@ -1,12 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Product } from '@/lib/types';
+import { Product, SizeOption } from '@/lib/types';
 import { getProductImage } from '@/lib/images';
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
-import { ParallaxImage } from '@/components/ParallaxSection';
 
 interface ProductDetailClientProps {
   product: Product;
@@ -14,8 +14,18 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
   const imageSrc = getProductImage(product.slug);
-  const isLowStock = product.stock > 0 && product.stock < 3;
-  const isSoldOut = product.stock === 0;
+  
+  // Size selection state
+  const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
+  const hasSizes = product.sizes && product.sizes.length > 0;
+  const selectedSize: SizeOption | null = hasSizes ? product.sizes![selectedSizeIndex] : null;
+  
+  // Price and stock based on selection
+  const displayPrice = selectedSize ? selectedSize.price : product.price;
+  const displayStock = selectedSize ? selectedSize.stock : product.stock;
+  
+  const isLowStock = displayStock > 0 && displayStock < 3;
+  const isSoldOut = displayStock === 0;
 
   return (
     <div className="bg-white min-h-screen">
@@ -81,27 +91,81 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               {/* Price */}
               <StaggerItem>
-                <p className="text-large font-serif mb-6">${product.price}</p>
+                <p className="text-large font-serif mb-6">${displayPrice}</p>
               </StaggerItem>
 
+              {/* Size Selector */}
+              {hasSizes && product.sizes!.length > 1 && (
+                <StaggerItem>
+                  <div className="mb-8">
+                    <span className="text-tiny uppercase tracking-[0.2em] text-black/40 block mb-4">
+                      Select Size
+                    </span>
+                    <div className="flex flex-col gap-3">
+                      {product.sizes!.map((sizeOption, index) => {
+                        const isSelected = index === selectedSizeIndex;
+                        const sizeIsSoldOut = sizeOption.stock === 0;
+                        
+                        return (
+                          <button
+                            key={sizeOption.name}
+                            onClick={() => !sizeIsSoldOut && setSelectedSizeIndex(index)}
+                            disabled={sizeIsSoldOut}
+                            className={`
+                              relative flex items-center justify-between
+                              px-5 py-4 border-2 transition-all duration-300
+                              ${isSelected 
+                                ? 'border-black bg-black text-white' 
+                                : sizeIsSoldOut
+                                  ? 'border-black/10 bg-black/5 text-black/30 cursor-not-allowed'
+                                  : 'border-black/20 hover:border-black text-black'
+                              }
+                            `}
+                          >
+                            <div className="flex flex-col items-start">
+                              <span className="text-[14px] font-medium">
+                                {sizeOption.name}
+                              </span>
+                              <span className={`text-[12px] ${isSelected ? 'text-white/70' : 'text-black/50'}`}>
+                                {sizeOption.size}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[16px] font-serif">
+                                ${sizeOption.price}
+                              </span>
+                              {sizeIsSoldOut && (
+                                <span className="text-[10px] uppercase tracking-wider">
+                                  Sold Out
+                                </span>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </StaggerItem>
+              )}
+
               {/* Stock Indicator */}
-              {isLowStock && (
+              {isLowStock && !isSoldOut && (
                 <StaggerItem>
                   <p className="text-tiny uppercase tracking-[0.2em] text-black/60 mb-6">
-                    Only {product.stock} left in stock
+                    Only {displayStock} left in stock
                   </p>
                 </StaggerItem>
               )}
 
               {/* Description */}
               <StaggerItem>
-                <p className="text-body leading-relaxed text-black/70 mb-8">
+                <p className="text-body leading-relaxed text-black/70 mb-8 whitespace-pre-line">
                   {product.description}
                 </p>
               </StaggerItem>
 
               {/* Scent Notes */}
-              {product.scentNotes.length > 0 && product.scentNotes[0] !== '' && (
+              {product.scentNotes.length > 0 && product.scentNotes[0] !== '' && product.scentNotes[0] !== 'Variety Pack' && (
                 <StaggerItem>
                   <div className="mb-8 pb-8 border-b border-black/10">
                     <span className="text-tiny uppercase tracking-[0.2em] text-black/40 block mb-3">
@@ -114,11 +178,25 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </StaggerItem>
               )}
 
+              {/* Bundle Contents */}
+              {product.isBundle && product.bundleIncludes && (
+                <StaggerItem>
+                  <div className="mb-8 pb-8 border-b border-black/10">
+                    <span className="text-tiny uppercase tracking-[0.2em] text-black/40 block mb-3">
+                      Includes
+                    </span>
+                    <p className="text-[13px] text-black/70">
+                      {product.bundleIncludes.join(' • ')}
+                    </p>
+                  </div>
+                </StaggerItem>
+              )}
+
               {/* Product Details */}
               <StaggerItem>
                 <div className="mb-10 space-y-2 text-[13px] text-black/50">
-                  {product.size && (
-                    <p>{product.size}</p>
+                  {selectedSize && (
+                    <p>{selectedSize.size}</p>
                   )}
                   {product.burnTime && product.burnTime !== 'N/A' && (
                     <p>{product.burnTime} burn time</p>
@@ -133,22 +211,32 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               {/* Add to Cart */}
               <StaggerItem>
-                <MagneticButton
-                  variant="primary"
-                  size="large"
-                  className="w-full justify-center"
-                  onClick={() => {
-                    // Add to cart logic
-                    console.log('Add to cart:', product.id);
-                  }}
-                >
-                  {isSoldOut 
-                    ? 'Sold Out' 
-                    : product.preOrder 
-                      ? 'Pre-Order Now' 
-                      : 'Add to Cart'
-                  }
-                </MagneticButton>
+                {isSoldOut ? (
+                  <button
+                    className="w-full py-5 px-8 bg-black/20 text-black/40 text-[13px] uppercase tracking-[0.15em] cursor-not-allowed"
+                    disabled
+                  >
+                    Sold Out
+                  </button>
+                ) : (
+                  <MagneticButton
+                    variant="primary"
+                    size="large"
+                    className="w-full justify-center"
+                    onClick={() => {
+                      const cartItem = {
+                        productId: product.id,
+                        productName: product.name,
+                        size: selectedSize?.name || 'Standard',
+                        price: displayPrice,
+                      };
+                      console.log('Add to cart:', cartItem);
+                      alert(`Added to cart: ${product.name} - ${selectedSize?.name || ''} ($${displayPrice})`);
+                    }}
+                  >
+                    {product.preOrder ? 'Pre-Order Now' : 'Add to Cart'}
+                  </MagneticButton>
+                )}
               </StaggerItem>
 
               {/* Additional Info */}
