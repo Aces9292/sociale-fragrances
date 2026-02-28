@@ -33,16 +33,20 @@ export default function CartPage() {
       });
 
       const data = await response.json();
+      console.log('Checkout response:', data);
 
       if (!response.ok) {
-        throw new Error(data.error || 'Checkout failed');
+        throw new Error(data.details || data.error || 'Checkout failed');
       }
 
       // Redirect to Stripe Checkout
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (err) {
+      console.error('Checkout error:', err);
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setLoading(false);
     }
