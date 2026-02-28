@@ -44,9 +44,9 @@ const productAltImages: Record<string, string[]> = {
   ],
 };
 
-// Collection hero images (Real Squarespace Photos)
+// Collection hero images (Real Product Photos)
 const collectionImages: Record<string, string> = {
-  'pride': '/images/products/squarespace/fire-island.jpg',
+  'pride': '/images/products/pride-collection-four-candles.jpg',
   'boyfriend': '/images/products/squarespace/hipster.jpg',
 };
 
