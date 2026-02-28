@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Product, SizeOption } from '@/lib/types';
 import { getProductImage } from '@/lib/images';
-import { SQUARESPACE_STORE_URL } from '@/lib/squarespace-mapping';
+import { useCart } from '@/lib/cart-context';
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
 
@@ -15,6 +15,8 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
   const imageSrc = getProductImage(product.slug);
+  const { addItem } = useCart();
+  const [addedToCart, setAddedToCart] = useState(false);
   
   // Size selection state
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
@@ -27,6 +29,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   
   const isLowStock = displayStock > 0 && displayStock < 3;
   const isSoldOut = displayStock === 0;
+
+  const handleAddToCart = () => {
+    addItem({
+      productId: product.slug,
+      name: product.name,
+      size: selectedSize?.name || 'Standard',
+      price: displayPrice,
+      quantity: 1,
+      image: imageSrc,
+    });
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   return (
     <div className="bg-white min-h-screen">
@@ -224,12 +239,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     variant="primary"
                     size="large"
                     className="w-full justify-center"
-                    onClick={() => {
-                      // Redirect to Squarespace store for checkout
-                      window.open(`${SQUARESPACE_STORE_URL}/shop-candles`, '_blank');
-                    }}
+                    onClick={handleAddToCart}
                   >
-                    {product.preOrder ? 'Pre-Order Now' : 'Add to Cart'}
+                    {addedToCart ? '✓ Added to Cart!' : product.preOrder ? 'Pre-Order Now' : 'Add to Cart'}
                   </MagneticButton>
                 )}
               </StaggerItem>
