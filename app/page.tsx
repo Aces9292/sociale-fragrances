@@ -291,7 +291,7 @@ export default function HomePage() {
               <Link href="/shop?collection=pride" className="block">
                 <div className="relative h-[50vh] md:h-[70vh] overflow-hidden img-zoom">
                   <Image
-                    src="/images/products/google-photos/pride-collection-lifestyle.jpg"
+                    src="/images/products/pride-collection-four-candles.jpg"
                     alt="Pride Collection"
                     fill
                     className="object-cover"
