@@ -35,7 +35,8 @@ export async function POST(request: Request) {
         currency: 'usd',
         product_data: {
           name: `${item.name} - ${item.size}`,
-          images: item.image ? [item.image] : [],
+          // Only include image if it's a full URL
+          ...(item.image?.startsWith('http') ? { images: [item.image] } : {}),
         },
         unit_amount: Math.round(item.price * 100), // Stripe uses cents
       },
