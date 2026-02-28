@@ -25,8 +25,8 @@ const heroImages = [
     alt: 'SOCIALE Ma Candle - Y2K Nostalgia with Furbys',
   },
   {
-    src: '/images/campaign/001-millennial-mom-nightstand-product-photog.png',
-    alt: 'Millennial Mom Nightstand - Baby Monitor & Memories',
+    src: '/images/campaign/sociale-ma-mom-life.jpg',
+    alt: 'SOCIALE Ma - Soccer Mom Life with Planner & Memories',
   },
   {
     src: '/images/campaign/001-grown-up-girl-aesthetic-flat-lay-matte-b.png',
