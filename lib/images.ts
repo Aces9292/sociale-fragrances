@@ -17,7 +17,7 @@ const productImages: Record<string, string> = {
   'boyfriend-bundle': '/images/products/squarespace/bro.jpg',
 
   // Special - Ma (Rose petals photo Alex sent)
-  'ma': '/images/campaign/ma-hero-posh.jpg',
+  'ma': '/images/products/ma-both-sizes.jpg',
 
   // Other
   'gift-card': '/images/products/squarespace/fire-island.jpg',
