@@ -153,8 +153,8 @@ export default function HomePage() {
           {/* Left - Large Image with Parallax (60%) */}
           <div className="relative h-[70vh] md:h-screen">
             <ParallaxImage
-              src="/images/campaign/ma-hero-posh.jpg"
-              alt="Millennial Ma Candle"
+              src="/images/products/ma-both-sizes.jpg"
+              alt="Millennial Ma Candle - Both Sizes"
               className="h-full"
               speed={0.2}
               kenBurns={false}
