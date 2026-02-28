@@ -17,8 +17,8 @@ import { SuccessAnimation } from '@/components/LoadingScreen';
 // Hero images for carousel rotation - Premium campaign shots
 const heroImages = [
   {
-    src: '/images/campaign/001-then-and-now-mom-nostalgia-flat-lay-blac.png',
-    alt: 'Then & Now - Y2K Girl to Mom',
+    src: '/images/campaign/mom-morning-routine.jpg',
+    alt: 'SOCIALE Millennial Ma - Mom Morning Routine with Coffee & Baby Monitor',
   },
   {
     src: '/images/campaign/sociale-ma-real-y2k.jpg',
@@ -29,8 +29,8 @@ const heroImages = [
     alt: 'SOCIALE Ma - Soccer Mom Life with Planner & Memories',
   },
   {
-    src: '/images/campaign/001-grown-up-girl-aesthetic-flat-lay-matte-b.png',
-    alt: 'Grown Up - Friendship Bracelet to Tennis Bracelet',
+    src: '/images/campaign/furby-flat-lay-y2k.jpg',
+    alt: 'SOCIALE Ma - Ultimate Y2K Collection with Furbys & Lip Smackers',
   },
 ];
 
