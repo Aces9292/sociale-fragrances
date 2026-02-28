@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Product, SizeOption } from '@/lib/types';
 import { getProductImage } from '@/lib/images';
+import { SQUARESPACE_STORE_URL } from '@/lib/squarespace-mapping';
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
 
@@ -224,14 +225,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     size="large"
                     className="w-full justify-center"
                     onClick={() => {
-                      const cartItem = {
-                        productId: product.id,
-                        productName: product.name,
-                        size: selectedSize?.name || 'Standard',
-                        price: displayPrice,
-                      };
-                      console.log('Add to cart:', cartItem);
-                      alert(`Added to cart: ${product.name} - ${selectedSize?.name || ''} ($${displayPrice})`);
+                      // Redirect to Squarespace store for checkout
+                      window.open(`${SQUARESPACE_STORE_URL}/shop-candles`, '_blank');
                     }}
                   >
                     {product.preOrder ? 'Pre-Order Now' : 'Add to Cart'}
