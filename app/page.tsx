@@ -213,7 +213,7 @@ export default function HomePage() {
                 </StaggerItem>
 
                 <StaggerItem>
-                  <p className="text-large font-serif mb-2">Starting at $32</p>
+                  <p className="text-large font-serif mb-2">$30</p>
                   <p className="text-tiny uppercase tracking-[0.2em] text-black/50 mb-8">
                     Pre-Order for Mother's Day
                   </p>
