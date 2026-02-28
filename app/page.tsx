@@ -17,20 +17,20 @@ import { SuccessAnimation } from '@/components/LoadingScreen';
 // Hero images for carousel rotation - Premium campaign shots
 const heroImages = [
   {
+    src: '/images/campaign/001-then-and-now-mom-nostalgia-flat-lay-blac.png',
+    alt: 'Then & Now - Y2K Girl to Mom',
+  },
+  {
     src: '/images/campaign/001-y2k-teenage-girl-bedroom-flat-lay-produc.png',
     alt: 'Y2K Bedroom - Furby & Lip Smackers',
   },
   {
-    src: '/images/campaign/001-mean-girls-aesthetic-flat-lay-product-ph.png',
-    alt: 'Mean Girls Aesthetic - Burn Book & Tiara',
+    src: '/images/campaign/001-millennial-mom-nightstand-product-photog.png',
+    alt: 'Millennial Mom Nightstand - Baby Monitor & Memories',
   },
   {
-    src: '/images/campaign/001-2000s-teenage-bedroom-nightstand-scene-b.png',
-    alt: '2000s Bedroom - Lava Lamp & Tamagotchi',
-  },
-  {
-    src: '/images/campaign/001-y2k-vanity-flat-lay-matte-black-candle-l.png',
-    alt: 'Y2K Vanity - Lisa Frank & Body Glitter',
+    src: '/images/campaign/001-grown-up-girl-aesthetic-flat-lay-matte-b.png',
+    alt: 'Grown Up - Friendship Bracelet to Tennis Bracelet',
   },
 ];
 
