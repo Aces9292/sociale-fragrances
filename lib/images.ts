@@ -14,7 +14,7 @@ const productImages: Record<string, string> = {
   'hipster': '/images/products/squarespace/hipster.jpg',
   'bro': '/images/products/squarespace/bro.jpg',
   'ivy-leaguer': '/images/products/squarespace/ivy-leaguer.jpg',
-  'boyfriend-bundle': '/images/products/squarespace/bro.jpg',
+  'boyfriend-bundle': '/images/products/boyfriend-bundle-three.jpg',
 
   // Special - Ma (Rose petals photo Alex sent)
   'ma': '/images/products/ma-both-sizes.jpg',
@@ -47,7 +47,7 @@ const productAltImages: Record<string, string[]> = {
 // Collection hero images (Real Product Photos)
 const collectionImages: Record<string, string> = {
   'pride': '/images/products/pride-collection-four-candles.jpg',
-  'boyfriend': '/images/products/squarespace/hipster.jpg',
+  'boyfriend': '/images/products/boyfriend-bundle-three.jpg',
 };
 
 // Lifestyle/brand images

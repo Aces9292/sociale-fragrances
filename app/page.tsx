@@ -323,7 +323,7 @@ export default function HomePage() {
               <Link href="/shop?collection=boyfriend" className="block">
                 <div className="relative h-[60vh] md:h-[80vh] overflow-hidden img-zoom">
                   <Image
-                    src="/images/products/the+bro+1.jpg"
+                    src="/images/products/boyfriend-bundle-three.jpg"
                     alt="Boyfriend Collection"
                     fill
                     className="object-cover"
