@@ -151,7 +151,7 @@ export default function AdminPage() {
           <h2 className="text-xl font-semibold mb-4">Quick Links</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <a
-              href="https://www.socialecandles.com/config/commerce"
+              href="https://maroon-sprout-936t.squarespace.com/config/commerce"
               target="_blank"
               rel="noopener noreferrer"
               className="block p-4 border rounded hover:bg-gray-50 text-center"
@@ -159,7 +159,7 @@ export default function AdminPage() {
               📦 Squarespace Products
             </a>
             <a
-              href="https://www.socialecandles.com/config/orders"
+              href="https://maroon-sprout-936t.squarespace.com/config/orders"
               target="_blank"
               rel="noopener noreferrer"
               className="block p-4 border rounded hover:bg-gray-50 text-center"

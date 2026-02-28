@@ -3,7 +3,7 @@ const SQUARESPACE_API_KEY = process.env.SQUARESPACE_API_KEY || '2226ae01-f7b6-44
 const SQUARESPACE_API_URL = 'https://api.squarespace.com/1.0/commerce';
 
 // Your Squarespace store checkout URL
-const SQUARESPACE_STORE_URL = 'https://www.socialecandles.com';
+const SQUARESPACE_STORE_URL = 'https://maroon-sprout-936t.squarespace.com';
 
 export interface SquarespaceVariant {
   id: string;

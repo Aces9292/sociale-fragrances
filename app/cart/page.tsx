@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 
-const SQUARESPACE_CART_URL = 'https://www.socialecandles.com/cart';
+const SQUARESPACE_CART_URL = 'https://maroon-sprout-936t.squarespace.com/cart';
 
 export default function CartPage() {
   // Option 1: Auto-redirect to Squarespace cart

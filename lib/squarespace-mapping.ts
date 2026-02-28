@@ -1,7 +1,7 @@
 // Mapping between our product slugs and Squarespace product IDs
 // This enables direct "Add to Cart" functionality via Squarespace
 
-export const SQUARESPACE_STORE_URL = 'https://www.socialecandles.com';
+export const SQUARESPACE_STORE_URL = 'https://maroon-sprout-936t.squarespace.com';
 
 export const productIdMapping: Record<string, string> = {
   'ma': '607497540559aa586dd22429',
