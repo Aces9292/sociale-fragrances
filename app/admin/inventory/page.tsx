@@ -72,13 +72,16 @@ export default function InventoryPage() {
     setSaveStatus('Saving...');
     
     try {
-      // Save to server API (updates products.json)
+      // Save to server API (updates GitHub)
       const response = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          productId: editedProduct.id,
-          sizes: editedProduct.sizes,
+          action: 'update-stock',
+          product: {
+            id: editedProduct.id,
+            sizes: editedProduct.sizes,
+          },
         }),
       });
       
@@ -89,13 +92,13 @@ export default function InventoryPage() {
       const result = await response.json();
       
       // Update local state
-      const updated = products.map(p => p.id === editedProduct.id ? result.product : p);
+      const updated = products.map(p => p.id === editedProduct.id ? result.products.find((rp: Product) => rp.id === p.id) || p : p);
       setProducts(updated);
       
       setEditingId(null);
       setEditedProduct(null);
-      setSaveStatus('✅ Saved! Changes are live on the website.');
-      setTimeout(() => setSaveStatus(''), 3000);
+      setSaveStatus('✅ Saved! Vercel will redeploy in ~2 minutes.');
+      setTimeout(() => setSaveStatus(''), 5000);
     } catch (error) {
       console.error('Save error:', error);
       setSaveStatus('❌ Error saving - try again');
@@ -172,7 +175,7 @@ export default function InventoryPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-serif mb-2">Inventory Dashboard</h1>
-          <p className="text-gray-600">Manage your product stock levels. Changes save instantly to the website.</p>
+          <p className="text-gray-600">Manage your product stock levels. Changes save to GitHub and auto-deploy.</p>
         </div>
 
         {/* Stats */}
@@ -312,18 +315,10 @@ export default function InventoryPage() {
             <li>Click "Edit" on any product</li>
             <li>Change the stock numbers for each size</li>
             <li>Set stock to 0 to show "Sold Out" on the website</li>
-            <li>Click "Save" - changes go live immediately</li>
-            <li>When you sell a candle, come here and reduce the stock</li>
+            <li>Click "Save" - changes commit to GitHub</li>
+            <li>Vercel auto-redeploys (~2 minutes)</li>
+            <li>New stock levels go live automatically</li>
           </ul>
-        </div>
-
-        {/* Note about sync */}
-        <div className="mt-4 bg-yellow-50 rounded-lg p-4">
-          <p className="text-sm text-yellow-800">
-            <strong>Note:</strong> This dashboard controls your website inventory only. 
-            If you also sell on Squarespace, you'll need to update stock there separately, 
-            or disable Squarespace products and use this site only.
-          </p>
         </div>
       </div>
     </div>

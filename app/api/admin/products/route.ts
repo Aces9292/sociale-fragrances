@@ -1,15 +1,63 @@
 import { NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
 
-const PRODUCTS_FILE = path.join(process.cwd(), 'data', 'products.json');
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_OWNER = 'aces9292';
+const GITHUB_REPO = 'sociale-fragrances';
+const PRODUCTS_PATH = 'data/products.json';
+
+// Helper to get file content from GitHub
+async function getGitHubFile() {
+  const response = await fetch(
+    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PRODUCTS_PATH}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    }
+  );
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch from GitHub');
+  }
+  
+  const data = await response.json();
+  const content = Buffer.from(data.content, 'base64').toString('utf8');
+  return { content: JSON.parse(content), sha: data.sha };
+}
+
+// Helper to update file on GitHub
+async function updateGitHubFile(content: any, sha: string, message: string) {
+  const response = await fetch(
+    `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PRODUCTS_PATH}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        content: Buffer.from(JSON.stringify(content, null, 2)).toString('base64'),
+        sha,
+      }),
+    }
+  );
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to update GitHub');
+  }
+  
+  return await response.json();
+}
 
 // GET - Read all products
 export async function GET() {
   try {
-    const data = await fs.readFile(PRODUCTS_FILE, 'utf8');
-    const products = JSON.parse(data);
-    return NextResponse.json(products);
+    const { content } = await getGitHubFile();
+    return NextResponse.json(content);
   } catch (error) {
     console.error('Error reading products:', error);
     return NextResponse.json({ error: 'Failed to read products' }, { status: 500 });
@@ -21,9 +69,8 @@ export async function POST(request: Request) {
   try {
     const { action, product } = await request.json();
     
-    // Read current products
-    const data = await fs.readFile(PRODUCTS_FILE, 'utf8');
-    const productsData = JSON.parse(data);
+    // Get current file from GitHub
+    const { content: productsData, sha } = await getGitHubFile();
     
     if (action === 'create') {
       // Generate unique ID
@@ -44,7 +91,7 @@ export async function POST(request: Request) {
         price: parseFloat(product.price) || 30,
         stock: parseInt(product.stock) || 0,
         description: product.description || '',
-        scentNotes: product.scentNotes ? product.scentNotes.split(',').map((s: string) => s.trim()) : [],
+        scentNotes: product.scentNotes || [],
         burnTime: product.burnTime || '50-70 hours',
         wax: product.wax || 'Vegan soy blend',
         sizes: product.sizes || [
@@ -54,6 +101,9 @@ export async function POST(request: Request) {
       };
       
       productsData.products.push(newProduct);
+      
+      // Update GitHub
+      await updateGitHubFile(productsData, sha, `Add product: ${product.name}`);
       
     } else if (action === 'update') {
       // Find and update product
@@ -68,17 +118,33 @@ export async function POST(request: Request) {
         sizes: product.sizes,
       };
       
+      // Update GitHub
+      await updateGitHubFile(productsData, sha, `Update product: ${product.name}`);
+      
+    } else if (action === 'update-stock') {
+      // Just update sizes/stock for inventory management
+      const productIndex = productsData.products.findIndex((p: any) => p.id === product.id);
+      if (productIndex === -1) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+      
+      productsData.products[productIndex].sizes = product.sizes;
+      productsData.products[productIndex].stock = product.sizes.reduce((sum: number, s: any) => sum + s.stock, 0);
+      
+      // Update GitHub
+      await updateGitHubFile(productsData, sha, `Update inventory: ${product.id}`);
+      
     } else if (action === 'delete') {
       // Delete product
       productsData.products = productsData.products.filter((p: any) => p.id !== product.id);
+      
+      // Update GitHub
+      await updateGitHubFile(productsData, sha, `Delete product: ${product.id}`);
     }
     
-    // Write back to file
-    await fs.writeFile(PRODUCTS_FILE, JSON.stringify(productsData, null, 2));
-    
     return NextResponse.json({ success: true, products: productsData.products });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error saving product:', error);
-    return NextResponse.json({ error: 'Failed to save product' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to save product' }, { status: 500 });
   }
 }
