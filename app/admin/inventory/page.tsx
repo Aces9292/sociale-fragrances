@@ -2,147 +2,54 @@
 
 import { useState, useEffect } from 'react';
 
+interface Size {
+  name: string;
+  size?: string;
+  price: number;
+  stock: number;
+}
+
 interface Product {
   id: string;
   name: string;
   slug: string;
   price: number;
   stock: number;
-  sizes?: { name: string; price: number; stock: number }[];
+  sizes?: Size[];
 }
-
-const PRODUCTS: Product[] = [
-  {
-    id: 'ma',
-    name: 'Millennial Ma',
-    slug: 'ma',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'fire-island',
-    name: 'Fire Island',
-    slug: 'fire-island',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'palm-springs',
-    name: 'Palm Springs',
-    slug: 'palm-springs',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'asbury-park',
-    name: 'Asbury Park',
-    slug: 'asbury-park',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'provincetown',
-    name: 'Provincetown',
-    slug: 'provincetown',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'hipster',
-    name: 'Hipster',
-    slug: 'hipster',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'bro',
-    name: 'Bro',
-    slug: 'bro',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'ivy-leaguer',
-    name: 'Ivy Leaguer',
-    slug: 'ivy-leaguer',
-    price: 30,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz)', price: 30, stock: 1 },
-      { name: 'Living Room Size (20 oz)', price: 45, stock: 1 },
-    ],
-  },
-  {
-    id: 'pride-collection-bundle',
-    name: 'Pride Collection Bundle',
-    slug: 'pride-collection-bundle',
-    price: 110,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz each)', price: 110, stock: 1 },
-      { name: 'Living Room Size (20 oz each)', price: 170, stock: 1 },
-    ],
-  },
-  {
-    id: 'boyfriend-bundle',
-    name: 'Boyfriend Bundle',
-    slug: 'boyfriend-bundle',
-    price: 75,
-    stock: 2,
-    sizes: [
-      { name: 'Bedroom Size (12 oz each)', price: 75, stock: 1 },
-      { name: 'Living Room Size (20 oz each)', price: 120, stock: 1 },
-    ],
-  },
-];
 
 export default function InventoryPage() {
   const [password, setPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedProduct, setEditedProduct] = useState<Product | null>(null);
   const [saveStatus, setSaveStatus] = useState<string>('');
 
-  // Load from localStorage on mount
+  // Load products from API
   useEffect(() => {
-    const saved = localStorage.getItem('sociale-inventory');
-    if (saved) {
-      try {
-        setProducts(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load inventory:', e);
-      }
+    if (authenticated) {
+      fetchProducts();
     }
-  }, []);
+  }, [authenticated]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/admin/products');
+      const data = await response.json();
+      // Filter out gift cards and subscriptions for inventory management
+      const inventoryProducts = data.products.filter((p: Product) => 
+        p.collection !== 'gift' && p.collection !== 'subscription'
+      );
+      setProducts(inventoryProducts);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading products:', error);
+      setSaveStatus('Error loading products');
+      setLoading(false);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -158,16 +65,41 @@ export default function InventoryPage() {
     setEditedProduct({ ...product });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editedProduct) return;
     
-    const updated = products.map(p => p.id === editedProduct.id ? editedProduct : p);
-    setProducts(updated);
-    localStorage.setItem('sociale-inventory', JSON.stringify(updated));
-    setEditingId(null);
-    setEditedProduct(null);
-    setSaveStatus('Saved!');
-    setTimeout(() => setSaveStatus(''), 2000);
+    setSaveStatus('Saving...');
+    
+    try {
+      // Save to server API (updates products.json)
+      const response = await fetch('/api/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: editedProduct.id,
+          sizes: editedProduct.sizes,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to save');
+      }
+      
+      const result = await response.json();
+      
+      // Update local state
+      const updated = products.map(p => p.id === editedProduct.id ? result.product : p);
+      setProducts(updated);
+      
+      setEditingId(null);
+      setEditedProduct(null);
+      setSaveStatus('✅ Saved! Changes are live on the website.');
+      setTimeout(() => setSaveStatus(''), 3000);
+    } catch (error) {
+      console.error('Save error:', error);
+      setSaveStatus('❌ Error saving - try again');
+      setTimeout(() => setSaveStatus(''), 3000);
+    }
   };
 
   const handleCancel = () => {
@@ -225,13 +157,21 @@ export default function InventoryPage() {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg">Loading inventory...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-serif mb-2">Inventory Dashboard</h1>
-          <p className="text-gray-600">Manage your product stock levels</p>
+          <p className="text-gray-600">Manage your product stock levels. Changes save instantly to the website.</p>
         </div>
 
         {/* Stats */}
@@ -251,7 +191,7 @@ export default function InventoryPage() {
         </div>
 
         {saveStatus && (
-          <div className="mb-4 p-4 bg-green-50 text-green-700 rounded-lg">
+          <div className={`mb-4 p-4 rounded-lg ${saveStatus.includes('✅') ? 'bg-green-50 text-green-700' : saveStatus.includes('❌') ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'}`}>
             {saveStatus}
           </div>
         )}
@@ -309,7 +249,7 @@ export default function InventoryPage() {
                         {product.sizes ? (
                           product.sizes.map((size, idx) => (
                             <div key={idx} className="text-sm">
-                              {size.name.split('(')[0]}: {size.stock}
+                              {size.name.split('(')[0]}: <span className={size.stock === 0 ? 'text-red-600 font-medium' : size.stock < 3 ? 'text-yellow-600 font-medium' : ''}>{size.stock}</span>
                             </div>
                           ))
                         ) : (
@@ -366,14 +306,23 @@ export default function InventoryPage() {
 
         {/* Instructions */}
         <div className="mt-8 bg-blue-50 rounded-lg p-6">
-          <h3 className="font-medium text-blue-900 mb-2">How to Use</h3>
+          <h3 className="font-medium text-blue-900 mb-2">How to Update Inventory</h3>
           <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
-            <li>Click "Edit" to change stock quantities</li>
-            <li>Set stock to 0 to mark as "Sold Out"</li>
-            <li>Click "Save" to update (saves to browser)</li>
-            <li>Changes are saved locally - clear browser cache will reset to defaults</li>
-            <li>To sync with Squarespace: Update quantities there, then update here to match</li>
+            <li>Click "Edit" on any product</li>
+            <li>Change the stock numbers for each size</li>
+            <li>Set stock to 0 to show "Sold Out" on the website</li>
+            <li>Click "Save" - changes go live immediately</li>
+            <li>When you sell a candle, come here and reduce the stock</li>
           </ul>
+        </div>
+
+        {/* Note about sync */}
+        <div className="mt-4 bg-yellow-50 rounded-lg p-4">
+          <p className="text-sm text-yellow-800">
+            <strong>Note:</strong> This dashboard controls your website inventory only. 
+            If you also sell on Squarespace, you'll need to update stock there separately, 
+            or disable Squarespace products and use this site only.
+          </p>
         </div>
       </div>
     </div>
