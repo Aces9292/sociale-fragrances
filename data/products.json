@@ -455,10 +455,11 @@
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 0.2,
-          "stock": 0
+          "stock": 5
         }
       ],
-      "featured": false
+      "featured": false,
+      "badge": "Test!"
     }
   ]
 }
