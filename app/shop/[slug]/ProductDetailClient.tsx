@@ -31,16 +31,37 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const isSoldOut = displayStock === 0;
 
   const handleAddToCart = () => {
-    addItem({
-      productId: product.slug,
-      name: product.name,
-      size: selectedSize?.name || 'Standard',
-      price: displayPrice,
-      quantity: 1,
-      image: imageSrc,
-    });
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+    // Redirect to Squarespace checkout with product
+    const squarespaceBase = 'https://maroon-sprout-936t.squarespace.com';
+    
+    // Map product slugs to Squarespace product IDs
+    const productIdMap: Record<string, string> = {
+      'ma': '607497540559aa586dd22429',
+      'fire-island': '60b5a29868146f31b45a9d45',
+      'palm-springs': '60b5a31a68146f31b45a9d86',
+      'asbury-park': '60b5a35dce451e2727369b74',
+      'provincetown': '60b5a2e5ce451e2727369b43',
+      'hipster': '6023fecfa8df8a132b86afbd',
+      'bro': '6023435e78e14e4765bdf7cc',
+      'ivy-leaguer': '6023fe2c73d1f51a6450f467',
+      'pride-collection-bundle': '60b5a54dce451e2727369c2a',
+      'boyfriend-bundle': '6061fba91982d25888984d72',
+    };
+    
+    const squarespaceProductId = productIdMap[product.slug];
+    
+    if (squarespaceProductId) {
+      // Build Squarespace add to cart URL
+      const sizeAttribute = selectedSize?.name.includes('20') || selectedSize?.name.includes('Living') 
+        ? 'Living Room Size (20 OZ)' 
+        : 'Bedroom Size (12 OZ)';
+      
+      const cartUrl = `${squarespaceBase}/cart?add=${squarespaceProductId}&attribute[Size]=${encodeURIComponent(sizeAttribute)}`;
+      window.open(cartUrl, '_blank');
+    } else {
+      // Fallback to Squarespace shop page
+      window.open(`${squarespaceBase}/shop-candles`, '_blank');
+    }
   };
 
   return (
