@@ -15,6 +15,7 @@ interface Product {
   slug: string;
   price: number;
   stock: number;
+  collection?: string;
   sizes?: Size[];
 }
 
