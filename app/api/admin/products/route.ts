@@ -16,32 +16,69 @@ export async function GET() {
   }
 }
 
-// POST - Update a product
+// POST - Create new product or update existing
 export async function POST(request: Request) {
   try {
-    const { productId, sizes } = await request.json();
+    const { action, product } = await request.json();
     
     // Read current products
     const data = await fs.readFile(PRODUCTS_FILE, 'utf8');
     const productsData = JSON.parse(data);
     
-    // Find and update product
-    const productIndex = productsData.products.findIndex((p: any) => p.id === productId);
-    if (productIndex === -1) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    if (action === 'create') {
+      // Generate unique ID
+      const newId = product.slug || product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      
+      // Check if product already exists
+      const existingIndex = productsData.products.findIndex((p: any) => p.id === newId);
+      if (existingIndex !== -1) {
+        return NextResponse.json({ error: 'Product with this name already exists' }, { status: 400 });
+      }
+      
+      // Create new product
+      const newProduct = {
+        id: newId,
+        name: product.name,
+        slug: newId,
+        collection: product.collection || 'special',
+        price: parseFloat(product.price) || 30,
+        stock: parseInt(product.stock) || 0,
+        description: product.description || '',
+        scentNotes: product.scentNotes ? product.scentNotes.split(',').map((s: string) => s.trim()) : [],
+        burnTime: product.burnTime || '50-70 hours',
+        wax: product.wax || 'Vegan soy blend',
+        sizes: product.sizes || [
+          { name: 'Bedroom Size', size: '12 oz', price: parseFloat(product.price) || 30, stock: parseInt(product.stock) || 0 }
+        ],
+        featured: product.featured || false,
+      };
+      
+      productsData.products.push(newProduct);
+      
+    } else if (action === 'update') {
+      // Find and update product
+      const productIndex = productsData.products.findIndex((p: any) => p.id === product.id);
+      if (productIndex === -1) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+      
+      productsData.products[productIndex] = {
+        ...productsData.products[productIndex],
+        ...product,
+        sizes: product.sizes,
+      };
+      
+    } else if (action === 'delete') {
+      // Delete product
+      productsData.products = productsData.products.filter((p: any) => p.id !== product.id);
     }
-    
-    // Update sizes and recalculate total stock
-    productsData.products[productIndex].sizes = sizes;
-    const totalStock = sizes.reduce((sum: number, size: any) => sum + size.stock, 0);
-    productsData.products[productIndex].stock = totalStock;
     
     // Write back to file
     await fs.writeFile(PRODUCTS_FILE, JSON.stringify(productsData, null, 2));
     
-    return NextResponse.json({ success: true, product: productsData.products[productIndex] });
+    return NextResponse.json({ success: true, products: productsData.products });
   } catch (error) {
-    console.error('Error updating product:', error);
-    return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
+    console.error('Error saving product:', error);
+    return NextResponse.json({ error: 'Failed to save product' }, { status: 500 });
   }
 }
