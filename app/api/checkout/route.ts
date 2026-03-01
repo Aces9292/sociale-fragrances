@@ -51,8 +51,13 @@ export async function POST(request: Request) {
       mode: 'payment',
       success_url: successUrl || `https://socialefragrances.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `https://socialefragrances.com/cart`,
+      billing_address_collection: 'required',
       shipping_address_collection: {
         allowed_countries: ['US'],
+      },
+      receipt_email: undefined, // Will be collected from customer
+      payment_intent_data: {
+        receipt_email: undefined, // Stripe will collect and send receipt
       },
       shipping_options: [
         {

@@ -108,7 +108,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               {/* Price */}
               <StaggerItem>
-                <p className="text-large font-serif mb-6">${displayPrice}</p>
+                <p className="text-large font-serif mb-6">${typeof displayPrice === 'number' ? displayPrice.toFixed(2) : displayPrice}</p>
               </StaggerItem>
 
               {/* Size Selector */}
@@ -149,7 +149,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             </div>
                             <div className="flex items-center gap-3">
                               <span className="text-[16px] font-serif">
-                                ${sizeOption.price}
+                                ${typeof sizeOption.price === 'number' ? sizeOption.price.toFixed(2) : sizeOption.price}
                               </span>
                               {sizeIsSoldOut && (
                                 <span className="text-[10px] uppercase tracking-wider">
