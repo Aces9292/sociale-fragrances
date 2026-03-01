@@ -452,12 +452,6 @@
       "wax": "Vegan soy blend",
       "sizes": [
         {
-          "name": "Bedroom Size",
-          "size": "12 oz",
-          "price": 0,
-          "stock": 20
-        },
-        {
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 0,
