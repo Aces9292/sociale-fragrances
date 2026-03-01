@@ -22,6 +22,7 @@ interface Product {
   wax: string;
   sizes: Size[];
   featured?: boolean;
+  onSale?: boolean;
   badge?: string;
   isBundle?: boolean;
 }
@@ -195,6 +196,8 @@ export default function ProductsAdminPage() {
         { name: 'Living Room Size', size: '20 oz', price: 45, stock: 0 },
       ],
       featured: false,
+      onSale: false,
+      badge: '',
     });
   };
 
@@ -364,35 +367,45 @@ export default function ProductsAdminPage() {
                   {formData.sizes?.map((size, index) => (
                     <div key={index} className="flex gap-4 items-start p-4 bg-gray-50 rounded-lg">
                       <div className="flex-1">
+                        <label className="block text-xs font-medium text-gray-500 mb-1">Size Name</label>
                         <input
                           type="text"
                           value={size.name}
                           onChange={(e) => updateSize(index, 'name', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded mb-2"
-                          placeholder="Size name"
+                          className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
+                          placeholder="e.g., Bedroom Size"
                         />
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={size.size}
-                            onChange={(e) => updateSize(index, 'size', e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded"
-                            placeholder="12 oz"
-                          />
-                          <input
-                            type="number"
-                            value={size.price}
-                            onChange={(e) => updateSize(index, 'price', parseFloat(e.target.value) || 0)}
-                            className="w-24 px-3 py-2 border border-gray-300 rounded"
-                            placeholder="Price"
-                          />
-                          <input
-                            type="number"
-                            value={size.stock}
-                            onChange={(e) => updateSize(index, 'stock', parseInt(e.target.value) || 0)}
-                            className="w-24 px-3 py-2 border border-gray-300 rounded"
-                            placeholder="Stock"
-                          />
+                        <div className="grid grid-cols-3 gap-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Size (oz)</label>
+                            <input
+                              type="text"
+                              value={size.size}
+                              onChange={(e) => updateSize(index, 'size', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                              placeholder="12 oz"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Price ($)</label>
+                            <input
+                              type="number"
+                              value={size.price}
+                              onChange={(e) => updateSize(index, 'price', parseFloat(e.target.value) || 0)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                              placeholder="30"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 mb-1">Stock</label>
+                            <input
+                              type="number"
+                              value={size.stock}
+                              onChange={(e) => updateSize(index, 'stock', parseInt(e.target.value) || 0)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded"
+                              placeholder="0"
+                            />
+                          </div>
                         </div>
                       </div>
                       <button
@@ -412,6 +425,33 @@ export default function ProductsAdminPage() {
                 >
                   + Add another size
                 </button>
+              </div>
+
+              {/* On Sale */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="onSale"
+                  checked={formData.onSale}
+                  onChange={(e) => setFormData({ ...formData, onSale: e.target.checked })}
+                  className="w-4 h-4"
+                />
+                <label htmlFor="onSale" className="text-sm font-medium text-gray-700">
+                  On Sale (shows sale banner)
+                </label>
+              </div>
+
+              {/* Badge */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product Badge</label>
+                <input
+                  type="text"
+                  value={formData.badge || ''}
+                  onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                  placeholder="e.g., NEW, SALE, LIMITED, Mother's Day 2026"
+                />
+                <p className="text-xs text-gray-500 mt-1">Leave empty for no badge. Examples: SALE, NEW, LIMITED EDITION</p>
               </div>
 
               {/* Featured */}

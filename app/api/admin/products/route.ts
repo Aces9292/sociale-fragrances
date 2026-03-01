@@ -98,6 +98,8 @@ export async function POST(request: Request) {
           { name: 'Bedroom Size', size: '12 oz', price: parseFloat(product.price) || 30, stock: parseInt(product.stock) || 0 }
         ],
         featured: product.featured || false,
+        onSale: product.onSale || false,
+        badge: product.badge || '',
       };
       
       productsData.products.push(newProduct);
