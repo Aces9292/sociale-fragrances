@@ -25,6 +25,7 @@ interface Product {
   onSale?: boolean;
   badge?: string;
   isBundle?: boolean;
+  image?: string;
 }
 
 const COLLECTIONS = [
@@ -198,6 +199,7 @@ export default function ProductsAdminPage() {
       featured: false,
       onSale: false,
       badge: '',
+      image: '',
     });
   };
 
@@ -358,6 +360,34 @@ export default function ProductsAdminPage() {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                   placeholder="e.g., Rose, Carnation, Lily of the Valley"
                 />
+              </div>
+
+              {/* Product Image */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Product Image URL</label>
+                <input
+                  type="text"
+                  value={formData.image || ''}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                  placeholder="https://socialefragrances.com/images/products/your-product.jpg"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the full URL to your product image. Recommended size: 1000x1000px
+                </p>
+                {formData.image && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                    <img 
+                      src={formData.image} 
+                      alt="Product preview" 
+                      className="w-32 h-32 object-cover rounded-lg border"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Sizes */}

@@ -100,6 +100,7 @@ export async function POST(request: Request) {
         featured: product.featured || false,
         onSale: product.onSale || false,
         badge: product.badge || '',
+        image: product.image || '',
       };
       
       productsData.products.push(newProduct);
