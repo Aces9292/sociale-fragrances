@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     console.log('Session ID:', session.id);
     console.log('Customer:', session.customer_details?.email);
     console.log('Amount:', session.amount_total);
-    console.log('Shipping:', session.shipping_details?.address);
+    console.log('Shipping:', session.collected_information);
 
     // Here you would typically:
     // 1. Send yourself an email notification
