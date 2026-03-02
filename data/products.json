@@ -208,7 +208,7 @@
       "slug": "pride-collection-bundle",
       "collection": "pride",
       "price": 110,
-      "stock": 6,
+      "stock": 4,
       "description": "All four Pride Collection candles in one beautifully packaged set. Fire Island, Palm Springs, Asbury Park, and Provincetown. A journey through the places that shaped a community. Includes rainbow match set.",
       "scentNotes": [
         "Variety Pack"
@@ -227,13 +227,13 @@
           "name": "Bedroom Size (12 oz each)",
           "size": "48 oz total",
           "price": 110,
-          "stock": 3
+          "stock": 4
         },
         {
           "name": "Living Room Size (20 oz each)",
           "size": "80 oz total",
           "price": 170,
-          "stock": 3
+          "stock": 0
         }
       ]
     },
