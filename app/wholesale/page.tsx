@@ -272,9 +272,9 @@ export default function WholesalePage() {
       {/* Footer Note */}
       <div className="py-8 bg-cream text-center">
         <p className="text-sm text-black/50">
-          Questions about wholesale? Email us at{' '}
-          <a href="mailto:wholesale@socialefragrances.com" className="underline">
-            wholesale@socialefragrances.com
+          Questions about wholesale? Email me at{' '}
+          <a href="mailto:alex@socialefragrances.com" className="underline">
+            alex@socialefragrances.com
           </a>
         </p>
       </div>

@@ -29,7 +29,7 @@ I've attached our wholesale line sheet with full product details and pricing. Wo
 Best,
 Alex
 Founder, SOCIALE Fragrances
-wholesale@socialefragrances.com
+alex@socialefragrances.com
 860-488-4947
 
 ---
