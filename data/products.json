@@ -281,7 +281,7 @@
       "slug": "bro",
       "collection": "boyfriend",
       "price": 30,
-      "stock": 1,
+      "stock": 6,
       "description": "'Sup, Bro? If you have a lacrosse stick and bottle of cologne nearby at all times, or can't resist a free shot from someone who does, the Bro will be your go-to. This bad boy is a combination of linen, eucalyptus, saffron, black pepper, leather, basil, and sea salt, and will burn great while you're getting ready for a night out.",
       "scentNotes": [
         "Linen",
@@ -306,7 +306,7 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 1
+          "stock": 6
         },
         {
           "name": "Living Room Size",
