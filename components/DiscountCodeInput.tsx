@@ -112,10 +112,6 @@ export default function DiscountCodeInput({
           {message}
         </p>
       )}
-
-      <p className="text-xs text-black/40">
-        Try: WELCOME15 (15% off $50+), MOTHERSDAY (20% off $75+)
-      </p>
     </div>
   );
 }
