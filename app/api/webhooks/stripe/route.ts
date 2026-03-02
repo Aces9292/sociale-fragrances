@@ -9,7 +9,7 @@ const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587');
 const SMTP_USER = process.env.SMTP_USER || 'info@socialefragrances.com';
 const SMTP_PASS = process.env.SMTP_PASS || '';
-const BUSINESS_EMAIL = process.env.BUSINESS_EMAIL || 'info@socialefragrances.com';
+const BUSINESS_EMAIL = 'info@socialefragrances.com'; // Always send to info@
 
 // Create transporter
 const getTransporter = () => {
