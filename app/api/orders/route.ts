@@ -1,97 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  getOrders, 
-  getOrderById, 
-  updateOrder, 
-  updateOrderStatus,
-  addTrackingInfo,
-  searchOrders,
-  getOrdersStats,
-  Order,
-  OrderStatus,
-} from '@/lib/orders-db';
-import nodemailer from 'nodemailer';
-import { 
-  emailTemplates, 
-  OrderData 
-} from '@/lib/email-templates';
-import { markEmailSent } from '@/lib/orders-db';
+import Stripe from 'stripe';
 
-// Email configuration
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587');
-const SMTP_USER = process.env.SMTP_USER || 'info@socialefragrances.com';
-const SMTP_PASS = process.env.SMTP_PASS || '';
-const BUSINESS_EMAIL = process.env.BUSINESS_EMAIL || 'alex@socialefragrances.com';
-
-// Create transporter
-const getTransporter = () => nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_PORT === 465,
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2023-10-16' as any,
 });
 
-// Convert Order to OrderData for email templates
-function orderToEmailData(order: Order): OrderData {
-  return {
-    orderId: order.id,
-    customerEmail: order.customerEmail,
-    customerName: order.customerName,
-    items: order.items,
-    subtotal: order.subtotal,
-    shipping: order.shipping,
-    total: order.total,
-    shippingAddress: order.shippingAddress,
-    trackingNumber: order.trackingNumber,
-    trackingUrl: order.trackingUrl,
-    createdAt: order.createdAt,
-  };
-}
-
-// GET /api/orders - Get all orders or search
+// GET /api/orders - Fetch orders from Stripe
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get('q');
-    const status = searchParams.get('status') as OrderStatus | null;
-    const orderId = searchParams.get('id');
     const stats = searchParams.get('stats');
+
+    // Fetch recent checkout sessions from Stripe
+    const sessions = await stripe.checkout.sessions.list({
+      limit: 100,
+      expand: ['data.line_items', 'data.customer_details'],
+    });
+
+    // Convert Stripe sessions to order format
+    const orders = sessions.data.map(session => {
+      const lineItems = session.line_items?.data || [];
+      
+      return {
+        id: session.id.replace('cs_live_', 'ORD-').replace('cs_test_', 'ORD-'),
+        stripeSessionId: session.id,
+        customerEmail: session.customer_details?.email || session.customer_email || '',
+        customerName: session.customer_details?.name || '',
+        items: lineItems.map(item => ({
+          name: item.description || 'Unknown Product',
+          size: (item.price?.product as any)?.metadata?.size || 'Standard',
+          price: (item.amount_total || 0) / 100 / (item.quantity || 1),
+          quantity: item.quantity || 1,
+        })),
+        subtotal: (session.amount_subtotal || 0) / 100,
+        shipping: (session.shipping_cost?.amount_total || 0) / 100,
+        total: (session.amount_total || 0) / 100,
+        status: session.payment_status === 'paid' ? 'pending' : 'cancelled',
+        shippingAddress: {
+          name: (session as any).shipping_details?.name || session.customer_details?.name || '',
+          line1: (session as any).shipping_details?.address?.line1 || session.customer_details?.address?.line1 || '',
+          line2: (session as any).shipping_details?.address?.line2 || undefined,
+          city: (session as any).shipping_details?.address?.city || session.customer_details?.address?.city || '',
+          state: (session as any).shipping_details?.address?.state || session.customer_details?.address?.state || '',
+          postal_code: (session as any).shipping_details?.address?.postal_code || session.customer_details?.address?.postal_code || '',
+        },
+        createdAt: new Date(session.created * 1000).toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    });
 
     // Get stats
     if (stats === 'true') {
-      const orderStats = await getOrdersStats();
-      return NextResponse.json(orderStats);
-    }
-
-    // Get single order by ID
-    if (orderId) {
-      const order = await getOrderById(orderId);
-      if (!order) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-      }
-      return NextResponse.json(order);
-    }
-
-    // Search orders
-    if (query) {
-      const orders = await searchOrders(query);
-      return NextResponse.json({ orders });
-    }
-
-    // Get all orders (optionally filtered by status)
-    let orders = await getOrders();
-    
-    if (status) {
-      orders = orders.filter(o => o.status === status);
+      const today = new Date().toISOString().split('T')[0];
+      const todayOrders = orders.filter(o => o.createdAt.startsWith(today));
+      
+      return NextResponse.json({
+        total: orders.length,
+        pending: orders.filter(o => o.status === 'pending').length,
+        processing: orders.filter(o => o.status === 'processing').length,
+        shipped: orders.filter(o => o.status === 'shipped').length,
+        delivered: orders.filter(o => o.status === 'delivered').length,
+        cancelled: orders.filter(o => o.status === 'cancelled').length,
+        totalRevenue: orders
+          .filter(o => o.status !== 'cancelled')
+          .reduce((sum, o) => sum + o.total, 0),
+        todayRevenue: todayOrders
+          .filter(o => o.status !== 'cancelled')
+          .reduce((sum, o) => sum + o.total, 0),
+        todayOrders: todayOrders.length,
+      });
     }
 
     return NextResponse.json({ orders });
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    console.error('Error fetching orders from Stripe:', error);
     return NextResponse.json({ 
       error: 'Failed to fetch orders',
       details: error instanceof Error ? error.message : String(error),
@@ -99,130 +81,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT /api/orders - Update an order
+// PUT /api/orders - Update order status (placeholder for future DB)
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { orderId, action, ...data } = body;
 
-    if (!orderId) {
-      return NextResponse.json({ error: 'Order ID required' }, { status: 400 });
-    }
-
-    const existingOrder = await getOrderById(orderId);
-    if (!existingOrder) {
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-    }
-
-    let updatedOrder: Order | null = null;
-    let emailSent = false;
-
-    switch (action) {
-      case 'update-status': {
-        const { status } = data as { status: OrderStatus };
-        if (!status) {
-          return NextResponse.json({ error: 'Status required' }, { status: 400 });
-        }
-        updatedOrder = await updateOrderStatus(orderId, status);
-        break;
-      }
-
-      case 'add-tracking': {
-        const { trackingNumber, trackingUrl } = data;
-        if (!trackingNumber) {
-          return NextResponse.json({ error: 'Tracking number required' }, { status: 400 });
-        }
-        updatedOrder = await addTrackingInfo(orderId, trackingNumber, trackingUrl);
-        break;
-      }
-
-      case 'send-shipping-email': {
-        const { trackingNumber, trackingUrl } = data;
-        
-        // Update tracking info first
-        updatedOrder = await addTrackingInfo(
-          orderId, 
-          trackingNumber || existingOrder.trackingNumber || '', 
-          trackingUrl || existingOrder.trackingUrl
-        );
-        
-        if (updatedOrder) {
-          // Send shipping confirmation email
-          try {
-            const transporter = getTransporter();
-            const emailData = orderToEmailData(updatedOrder);
-            const email = emailTemplates.shippingConfirmation(emailData);
-            
-            await transporter.sendMail({
-              from: `"SOCIALE Fragrances" <${SMTP_USER}>`,
-              to: updatedOrder.customerEmail,
-              subject: email.subject,
-              html: email.html,
-              text: email.text,
-            });
-            
-            await markEmailSent(orderId, 'shipping');
-            emailSent = true;
-          } catch (emailError) {
-            console.error('Failed to send shipping email:', emailError);
-          }
-        }
-        break;
-      }
-
-      case 'send-delivered-email': {
-        updatedOrder = await updateOrderStatus(orderId, 'delivered');
-        
-        if (updatedOrder) {
-          // Send delivered notification email
-          try {
-            const transporter = getTransporter();
-            const emailData = orderToEmailData(updatedOrder);
-            const email = emailTemplates.orderDelivered(emailData);
-            
-            await transporter.sendMail({
-              from: `"SOCIALE Fragrances" <${SMTP_USER}>`,
-              to: updatedOrder.customerEmail,
-              subject: email.subject,
-              html: email.html,
-              text: email.text,
-            });
-            
-            await markEmailSent(orderId, 'delivered');
-            emailSent = true;
-          } catch (emailError) {
-            console.error('Failed to send delivered email:', emailError);
-          }
-        }
-        break;
-      }
-
-      case 'update-notes': {
-        const { notes } = data;
-        updatedOrder = await updateOrder(orderId, { notes });
-        break;
-      }
-
-      default: {
-        // General update
-        updatedOrder = await updateOrder(orderId, data);
-      }
-    }
-
-    if (!updatedOrder) {
-      return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
-    }
-
+    // For now, just return success - we'd need a real database for persistence
     return NextResponse.json({ 
       success: true, 
-      order: updatedOrder,
-      emailSent,
+      message: 'Order updates require a database. Use Stripe Dashboard for now.',
     });
   } catch (error) {
     console.error('Error updating order:', error);
     return NextResponse.json({ 
       error: 'Failed to update order',
-      details: error instanceof Error ? error.message : String(error),
     }, { status: 500 });
   }
 }
