@@ -55,10 +55,6 @@ export async function POST(request: Request) {
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      receipt_email: undefined, // Will be collected from customer
-      payment_intent_data: {
-        receipt_email: undefined, // Stripe will collect and send receipt
-      },
       shipping_options: [
         {
           shipping_rate_data: {
