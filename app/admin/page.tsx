@@ -30,7 +30,7 @@ export default function AdminPage() {
   // Simple password protection
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'sociale2026') {
+    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'sociale2026') {
       setAuthenticated(true);
     } else {
       alert('Wrong password');
