@@ -151,10 +151,38 @@ To: ${BUSINESS_EMAIL}
 
     return NextResponse.json({ error: 'Invalid email type. Valid types: test, customer-confirmation, business-notification, shipping-confirmation, order-delivered' }, { status: 400 });
   } catch (error) {
-    console.error('Email error:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode = (error as { code?: string })?.code;
+    
+    console.error('Email error:', {
+      message: errorMessage,
+      code: errorCode,
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    
+    // Provide user-friendly error messages for common SMTP issues
+    let userMessage = 'Failed to send email';
+    let hint = '';
+    
+    if (errorCode === 'EAUTH' || errorMessage.includes('Invalid login') || errorMessage.includes('authentication')) {
+      userMessage = 'SMTP Authentication Failed';
+      hint = 'Gmail requires an App Password (not your regular password). Generate one at: https://myaccount.google.com/apppasswords';
+    } else if (errorCode === 'ESOCKET' || errorMessage.includes('ECONNREFUSED')) {
+      userMessage = 'Cannot connect to SMTP server';
+      hint = 'Check SMTP_HOST and SMTP_PORT settings';
+    } else if (errorMessage.includes('self signed certificate')) {
+      userMessage = 'SSL/TLS certificate error';
+      hint = 'Try setting SMTP_PORT=465 for SSL';
+    } else if (errorMessage.includes('SMTP_PASS')) {
+      userMessage = 'SMTP password not configured';
+      hint = 'Add SMTP_PASS environment variable in Vercel';
+    }
+    
     return NextResponse.json({ 
-      error: 'Failed to send email', 
-      details: error instanceof Error ? error.message : String(error) 
+      error: userMessage,
+      hint: hint,
+      details: errorMessage,
+      code: errorCode,
     }, { status: 500 });
   }
 }

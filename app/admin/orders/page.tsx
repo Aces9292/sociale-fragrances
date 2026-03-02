@@ -255,13 +255,20 @@ export default function OrdersAdminPage() {
         body: JSON.stringify({ type: 'test' }),
       });
       
+      const data = await response.json();
+      
       if (response.ok) {
         showMessage('Test email sent! Check your inbox.', 'success');
       } else {
-        throw new Error('Failed to send');
+        // Show detailed error from API
+        const errorMsg = data.hint 
+          ? `${data.error}: ${data.hint}`
+          : data.details || data.error || 'Failed to send';
+        throw new Error(errorMsg);
       }
     } catch (error) {
-      showMessage('Failed to send test email. Check SMTP settings.', 'error');
+      const message = error instanceof Error ? error.message : 'Failed to send test email';
+      showMessage(message, 'error');
     } finally {
       setActionLoading(false);
     }
