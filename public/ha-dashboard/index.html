@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOCIALE Command Center</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --accent: #FF4500;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --glass: rgba(30, 30, 30, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+        }
+
+        .header .time {
+            font-size: 3rem;
+            font-weight: 200;
+            color: var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .light-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .light-btn {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .light-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .light-btn.on {
+            background: rgba(255, 69, 0, 0.2);
+            border-color: var(--accent);
+        }
+
+        .light-btn .name {
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .light-btn .status {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-indicator.online {
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+        }
+
+        .status-indicator.offline {
+            background: #ef4444;
+        }
+
+        .entity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .entity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .entity-name {
+            font-size: 0.9rem;
+        }
+
+        .entity-state {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .refresh-btn.spinning {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="dashboard">
+            <div class="header">
+                <h1>HOME ASSISTANT</h1>
+                <div class="time">{{ currentTime }}</div>
+                <p style="color: var(--text-secondary); margin-top: 10px;">
+                    <span class="status-indicator" :class="connected ? 'online' : 'offline'"></span>
+                    {{ connected ? 'Connected' : 'Disconnected' }}
+                </p>
+            </div>
+
+            <div v-if="loading" class="loading">
+                Connecting to Home Assistant...
+            </div>
+
+            <div v-else-if="error" class="error-message">
+                <h3>Connection Error</h3>
+                <p>{{ error }}</p>
+                <p style="margin-top: 10px; font-size: 0.9rem;">
+                    Make sure you're accessing this from the same network as Home Assistant
+                </p>
+            </div>
+
+            <div v-else class="grid">
+                <!-- Temperature Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Climate</span>
+                    </div>
+                    <div class="entity-list">
+                        <div v-for="sensor in temperatureSensors" :key="sensor.entity_id" class="entity-item">
+                            <span class="entity-name">{{ formatEntityName(sensor.entity_id) }}</span>
+                            <span class="entity-state">{{ sensor.state }}°F</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lights Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Lights ({{ lightsOn }} on)</span>
+                    </div>
+                    <div class="light-grid">
+                        <div 
+                            v-for="light in lights.slice(0, 6)" 
+                            :key="light.entity_id"
+                            class="light-btn"
+                            :class="{ on: light.state === 'on' }"
+                            @click="toggleLight(light)"
+                        >
+                            <div class="name">{{ formatEntityName(light.entity_id) }}</div>
+                            <div class="status">{{ light.state }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">System Status</span>
+                    </div>
+                    <div class="entity-list">
+                        <div class="entity-item">
+                            <span class="entity-name">Total Entities</span>
+                            <span class="entity-state">{{ entities.length }}</span>
+                        </div>
+                        <div class="entity-item">
+                            <span class="entity-name">Unavailable</span>
+                            <span class="entity-state" style="color: #ef4444;">{{ unavailableCount }}</span>
+                        </div>
+                        <div class="entity-item">
+                            <span class="entity-name">Last Update</span>
+                            <span class="entity-state">{{ lastUpdate }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Recent Changes</span>
+                    </div>
+                    <div class="entity-list">
+                        <div v-for="entity in recentlyChanged.slice(0, 5)" :key="entity.entity_id" class="entity-item">
+                            <span class="entity-name">{{ formatEntityName(entity.entity_id) }}</span>
+                            <span class="entity-state">{{ entity.state }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button 
+                class="refresh-btn" 
+                :class="{ spinning: loading }"
+                @click="refreshData"
+                title="Refresh Data"
+            >
+                ↻
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    entities: [],
+                    loading: true,
+                    error: null,
+                    connected: false,
+                    currentTime: '',
+                    lastUpdate: 'Never'
+                }
+            },
+
+            computed: {
+                temperatureSensors() {
+                    return this.entities
+                        .filter(e => e.entity_id.includes('temperature') && !e.entity_id.includes('trend'))
+                        .slice(0, 4);
+                },
+
+                lights() {
+                    return this.entities
+                        .filter(e => e.entity_id.startsWith('light.'))
+                        .sort((a, b) => a.entity_id.localeCompare(b.entity_id));
+                },
+
+                lightsOn() {
+                    return this.lights.filter(l => l.state === 'on').length;
+                },
+
+                unavailableCount() {
+                    return this.entities.filter(e => e.state === 'unavailable').length;
+                },
+
+                recentlyChanged() {
+                    return [...this.entities]
+                        .filter(e => e.last_changed)
+                        .sort((a, b) => new Date(b.last_changed) - new Date(a.last_changed))
+                        .slice(0, 10);
+                }
+            },
+
+            mounted() {
+                this.updateTime();
+                setInterval(this.updateTime, 1000);
+                this.refreshData();
+                // Auto-refresh every 30 seconds
+                setInterval(() => this.refreshData(), 30000);
+            },
+
+            methods: {
+                updateTime() {
+                    this.currentTime = new Date().toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                },
+
+                async refreshData() {
+                    this.loading = true;
+                    this.error = null;
+
+                    try {
+                        // Try to fetch from HA through our proxy
+                        const response = await fetch('/api/ha-proxy/states', {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+
+                        const data = await response.json();
+                        this.entities = data;
+                        this.connected = true;
+                        this.lastUpdate = new Date().toLocaleTimeString();
+                    } catch (err) {
+                        console.error('Failed to fetch:', err);
+                        this.error = err.message;
+                        this.connected = false;
+                        
+                        // Fallback: show demo data if HA is not accessible
+                        this.loadDemoData();
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                loadDemoData() {
+                    // Demo data for when HA is not accessible
+                    this.entities = [
+                        { entity_id: 'sensor.living_room_temperature', state: '72', last_changed: new Date().toISOString() },
+                        { entity_id: 'sensor.bedroom_temperature', state: '70', last_changed: new Date().toISOString() },
+                        { entity_id: 'light.living_room', state: 'on', last_changed: new Date().toISOString() },
+                        { entity_id: 'light.kitchen', state: 'off', last_changed: new Date().toISOString() },
+                        { entity_id: 'light.bedroom', state: 'on', last_changed: new Date().toISOString() },
+                    ];
+                },
+
+                formatEntityName(entityId) {
+                    return entityId
+                        .split('.')[1]
+                        .replace(/_/g, ' ')
+                        .replace(/\b\w/g, l => l.toUpperCase());
+                },
+
+                async toggleLight(light) {
+                    const turnOn = light.state !== 'on';
+                    
+                    try {
+                        await fetch('/api/ha-proxy/services/light/turn_on', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                entity_id: light.entity_id
+                            })
+                        });
+                        
+                        // Optimistically update UI
+                        light.state = turnOn ? 'on' : 'off';
+                    } catch (err) {
+                        console.error('Failed to toggle light:', err);
+                        alert('Failed to toggle light. Make sure HA is connected.');
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
