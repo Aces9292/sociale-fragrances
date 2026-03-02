@@ -27,11 +27,11 @@ PROSPECTS = [
         "notes": "Explicitly supports small makers"
     },
     {
-        "name": "",
+        "name": "Kimberly",
         "store": "dwell New Haven",
-        "email": "",  # Need to find
+        "email": "info@dwellnewhaven.com",
         "city": "New Haven",
-        "notes": "Already sells candles!"
+        "notes": "Already sells candles! Owner Kimberly Pedrick"
     },
     {
         "name": "",
@@ -69,11 +69,11 @@ PROSPECTS = [
         "notes": "High-end décor focus"
     },
     {
-        "name": "",
+        "name": "Karen",
         "store": "The Whitney Shop",
-        "email": "",  # Need to find
+        "email": "karen@thewhitneyshop.com",
         "city": "New Canaan",
-        "notes": "Since 1947"
+        "notes": "Since 1947, 2nd generation"
     },
     {
         "name": "",
@@ -106,30 +106,30 @@ PROSPECTS = [
     {
         "name": "",
         "store": "Walker-Loden",
-        "email": "",  # Need to find
+        "email": "walkerlodenltd@gmail.com",
         "city": "New Haven",
-        "notes": "Gift shop"
+        "notes": "3 locations, since 1989"
     },
     {
         "name": "",
         "store": "Winter Sun Summer Moon",
-        "email": "",  # Need to find
+        "email": "contactus@wintersunsummermoon.com",
         "city": "Rhinebeck, NY",
-        "notes": "Local artisans"
+        "notes": "Local artisans, eclectic boutique"
     },
     {
         "name": "",
-        "store": "Pink Olive",
-        "email": "",  # Need to find
+        "store": "Pink Olive Cold Spring",
+        "email": "coldspring@pinkolive.com",
         "city": "Cold Spring, NY",
-        "notes": "Makes their own candles"
+        "notes": "Makes their own candles, multiple locations"
     },
     {
         "name": "",
         "store": "Palmer's Market",
-        "email": "",  # Need to find
+        "email": "info@palmersdarien.com",
         "city": "Darien",
-        "notes": "100+ years, sells candles"
+        "notes": "100+ years, sells candles, family owned"
     },
     {
         "name": "Diane",
