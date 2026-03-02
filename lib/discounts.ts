@@ -12,8 +12,8 @@ export interface DiscountCode {
   description: string;
 }
 
-// Active discount codes
-export const DISCOUNT_CODES: DiscountCode[] = [
+// Default discount codes - can be overridden via admin
+let DISCOUNT_CODES: DiscountCode[] = [
   {
     code: 'WELCOME15',
     type: 'percentage',
@@ -54,6 +54,19 @@ export const DISCOUNT_CODES: DiscountCode[] = [
   }
 ];
 
+// Get current discount codes
+export function getDiscountCodes(): DiscountCode[] {
+  return DISCOUNT_CODES;
+}
+
+// Update discount codes (for admin use)
+export function updateDiscountCodes(codes: DiscountCode[]) {
+  DISCOUNT_CODES = codes;
+}
+
+// Export for backwards compatibility
+export { DISCOUNT_CODES };
+
 export function validateDiscountCode(code: string, subtotal: number): { 
   valid: boolean; 
   discount?: number; 
@@ -61,7 +74,8 @@ export function validateDiscountCode(code: string, subtotal: number): {
   code?: DiscountCode;
 } {
   const upperCode = code.toUpperCase().trim();
-  const discount = DISCOUNT_CODES.find(d => 
+  const codes = getDiscountCodes();
+  const discount = codes.find(d => 
     d.code === upperCode && d.active
   );
 
