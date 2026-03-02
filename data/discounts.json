@@ -1,0 +1,43 @@
+{
+  "discounts": [
+    {
+      "code": "WELCOME15",
+      "type": "percentage",
+      "value": 15,
+      "minOrder": 50,
+      "active": true,
+      "usageCount": 0,
+      "description": "15% off your first order over $50"
+    },
+    {
+      "code": "MOTHERSDAY",
+      "type": "percentage",
+      "value": 20,
+      "minOrder": 75,
+      "expiresAt": "2026-05-11",
+      "active": true,
+      "usageCount": 0,
+      "description": "20% off for Mother's Day (expires May 11, 2026)"
+    },
+    {
+      "code": "FREESHIP",
+      "type": "fixed",
+      "value": 10,
+      "minOrder": 100,
+      "maxDiscount": 10,
+      "active": true,
+      "usageCount": 0,
+      "description": "Free shipping on orders over $100"
+    },
+    {
+      "code": "WHOLESALE",
+      "type": "percentage",
+      "value": 50,
+      "minOrder": 150,
+      "active": true,
+      "usageCount": 0,
+      "description": "Wholesale pricing (50% off)"
+    }
+  ],
+  "lastUpdated": "2026-03-02T13:52:00Z"
+}

@@ -12,47 +12,11 @@ export interface DiscountCode {
   description: string;
 }
 
-// Default discount codes - can be overridden via admin
-let DISCOUNT_CODES: DiscountCode[] = [
-  {
-    code: 'WELCOME15',
-    type: 'percentage',
-    value: 15,
-    minOrder: 50,
-    active: true,
-    usageCount: 0,
-    description: '15% off your first order over $50'
-  },
-  {
-    code: 'MOTHERSDAY',
-    type: 'percentage',
-    value: 20,
-    minOrder: 75,
-    expiresAt: '2026-05-11',
-    active: true,
-    usageCount: 0,
-    description: '20% off for Mother\'s Day (expires May 11, 2026)'
-  },
-  {
-    code: 'FREESHIP',
-    type: 'fixed',
-    value: 10,
-    minOrder: 100,
-    maxDiscount: 10,
-    active: true,
-    usageCount: 0,
-    description: 'Free shipping on orders over $100'
-  },
-  {
-    code: 'WHOLESALE',
-    type: 'percentage',
-    value: 50,
-    minOrder: 150,
-    active: true,
-    usageCount: 0,
-    description: 'Wholesale pricing (50% off)'
-  }
-];
+// Import from JSON file for server-side, fallback for client-side
+import discountsData from '@/data/discounts.json';
+
+// Default discount codes from JSON
+let DISCOUNT_CODES: DiscountCode[] = discountsData.discounts;
 
 // Get current discount codes
 export function getDiscountCodes(): DiscountCode[] {
@@ -61,6 +25,11 @@ export function getDiscountCodes(): DiscountCode[] {
 
 // Update discount codes (for admin use)
 export function updateDiscountCodes(codes: DiscountCode[]) {
+  DISCOUNT_CODES = codes;
+}
+
+// Set discount codes from API response
+export function setDiscountCodes(codes: DiscountCode[]) {
   DISCOUNT_CODES = codes;
 }
 

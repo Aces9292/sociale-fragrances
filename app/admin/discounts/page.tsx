@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DISCOUNT_CODES, DiscountCode } from '@/lib/discounts';
+import { DISCOUNT_CODES, DiscountCode, setDiscountCodes } from '@/lib/discounts';
 
 interface AdminDiscountCode extends DiscountCode {
   id: string;
@@ -29,14 +29,31 @@ export default function AdminDiscountsPage() {
 
   useEffect(() => {
     if (authenticated) {
-      // Load discounts with IDs
+      fetchDiscounts();
+    }
+  }, [authenticated]);
+
+  const fetchDiscounts = async () => {
+    try {
+      const response = await fetch('/api/admin/discounts');
+      const data = await response.json();
+      if (data.discounts) {
+        const codesWithIds = data.discounts.map((d: DiscountCode, index: number) => ({
+          ...d,
+          id: `discount-${index}`
+        }));
+        setDiscounts(codesWithIds);
+      }
+    } catch (error) {
+      console.error('Failed to fetch discounts:', error);
+      // Fallback to local data
       const codesWithIds = DISCOUNT_CODES.map((d, index) => ({
         ...d,
         id: `discount-${index}`
       }));
       setDiscounts(codesWithIds);
     }
-  }, [authenticated]);
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,39 +64,84 @@ export default function AdminDiscountsPage() {
     }
   };
 
-  const toggleActive = (id: string) => {
+  const toggleActive = async (id: string) => {
+    const code = discounts.find(d => d.id === id);
+    if (!code) return;
+    
+    const newActive = !code.active;
+    
+    // Optimistically update UI
     setDiscounts(prev => prev.map(d => 
-      d.id === id ? { ...d, active: !d.active } : d
+      d.id === id ? { ...d, active: newActive } : d
     ));
-    setSaveStatus('✅ Changes saved (refresh page to apply)');
+    
+    // Persist to GitHub
+    try {
+      const response = await fetch('/api/admin/discounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'toggle',
+          code: code.code,
+          active: newActive
+        })
+      });
+      
+      if (response.ok) {
+        setSaveStatus(`✅ ${code.code} ${newActive ? 'activated' : 'deactivated'} and saved`);
+        // Update local cache
+        const newCodes = discounts.map(d => 
+          d.id === id ? { ...d, active: newActive } : d
+        );
+        setDiscountCodes(newCodes.map(({ id, ...rest }) => rest));
+      } else {
+        setSaveStatus('❌ Failed to save to GitHub');
+      }
+    } catch (error) {
+      setSaveStatus('❌ Network error - will retry on save');
+    }
+    
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
-  const handleSaveToGitHub = async () => {
-    setSaveStatus('Saving to GitHub...');
-    // In production, this would commit to the repo
-    // For now, just show confirmation
-    setTimeout(() => {
-      setSaveStatus('✅ Discount codes updated! (Note: Changes persist until next deployment)');
-    }, 1000);
-  };
 
-  const handleDelete = (id: string) => {
+
+  const handleDelete = async (id: string) => {
+    const code = discounts.find(d => d.id === id);
+    if (!code) return;
+    
     if (confirm('Are you sure you want to delete this code?')) {
-      setDiscounts(prev => prev.filter(d => d.id !== id));
-      setSaveStatus('✅ Code deleted');
+      try {
+        const response = await fetch('/api/admin/discounts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'delete',
+            code: code.code
+          })
+        });
+        
+        if (response.ok) {
+          setDiscounts(prev => prev.filter(d => d.id !== id));
+          setSaveStatus(`✅ ${code.code} deleted from GitHub`);
+        } else {
+          setSaveStatus('❌ Failed to delete');
+        }
+      } catch (error) {
+        setSaveStatus('❌ Network error');
+      }
+      
       setTimeout(() => setSaveStatus(''), 3000);
     }
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!formData.code || !formData.value) {
       alert('Code and value are required');
       return;
     }
     
-    const newCode: AdminDiscountCode = {
-      id: `discount-${Date.now()}`,
+    const newCode: DiscountCode = {
       code: formData.code.toUpperCase().trim(),
       type: formData.type as 'percentage' | 'fixed',
       value: Number(formData.value),
@@ -92,16 +154,35 @@ export default function AdminDiscountsPage() {
       description: formData.description || ''
     };
     
-    setDiscounts(prev => [...prev, newCode]);
-    setFormData({
-      code: '',
-      type: 'percentage',
-      value: 0,
-      active: true,
-      description: ''
-    });
-    setEditingCode(null);
-    setSaveStatus('✅ New code created!');
+    // Persist to GitHub
+    try {
+      const response = await fetch('/api/admin/discounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          discounts: newCode
+        })
+      });
+      
+      if (response.ok) {
+        // Update local state
+        setDiscounts(prev => [...prev, { ...newCode, id: `discount-${Date.now()}` }]);
+        setFormData({
+          code: '',
+          type: 'percentage',
+          value: 0,
+          active: true,
+          description: ''
+        });
+        setSaveStatus(`✅ ${newCode.code} created and saved to GitHub`);
+      } else {
+        setSaveStatus('❌ Failed to save to GitHub');
+      }
+    } catch (error) {
+      setSaveStatus('❌ Network error');
+    }
+    
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
@@ -141,14 +222,8 @@ export default function AdminDiscountsPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-serif mb-2">Discount Codes</h1>
-            <p className="text-gray-600">Create, edit, and activate promotional codes</p>
+            <p className="text-gray-600">Create, edit, and activate promotional codes (auto-saves to GitHub)</p>
           </div>
-          <button
-            onClick={handleSaveToGitHub}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Save Changes
-          </button>
         </div>
 
         {saveStatus && (
@@ -317,9 +392,10 @@ export default function AdminDiscountsPage() {
           <h3 className="font-medium text-blue-900 mb-2">How to Use</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Click "Active/Inactive" to enable or disable codes instantly</li>
-            <li>• Changes are saved in memory (will reset on deployment unless committed to GitHub)</li>
-            <li>• For permanent changes, click "Save Changes" to commit to repository</li>
+            <li>• Changes are automatically saved to GitHub and persist across deployments</li>
+            <li>• Vercel will auto-redeploy when you make changes (~2 minutes)</li>
             <li>• Usage count tracks how many times a code has been successfully applied</li>
+            <li>• Secret codes are never shown to customers - they must discover or be told</li>
           </ul>
         </div>
       </div>
