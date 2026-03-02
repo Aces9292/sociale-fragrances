@@ -69,6 +69,36 @@ export async function POST(request: Request) {
   try {
     const { action, product } = await request.json();
     
+    // Validation for create/update
+    if (action === 'create' || action === 'update') {
+      // Minimum price validation
+      const price = parseFloat(product.price);
+      if (isNaN(price) || price < 5) {
+        return NextResponse.json({ 
+          error: 'Price must be at least $5.00' 
+        }, { status: 400 });
+      }
+      
+      // Validate sizes have proper pricing
+      if (product.sizes) {
+        for (const size of product.sizes) {
+          if (size.price < 5) {
+            return NextResponse.json({ 
+              error: `Size "${size.name}" must be at least $5.00` 
+            }, { status: 400 });
+          }
+        }
+      }
+      
+      // Prevent test products in production
+      const name = (product.name || '').toLowerCase();
+      if (name.includes('test') || name.includes('asdf') || name.includes('xxx')) {
+        return NextResponse.json({ 
+          error: 'Product name cannot contain test words' 
+        }, { status: 400 });
+      }
+    }
+    
     // Get current file from GitHub
     const { content: productsData, sha } = await getGitHubFile();
     

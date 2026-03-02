@@ -7,7 +7,7 @@
       "collection": "special",
       "price": 30,
       "stock": 2,
-      "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004—butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
+      "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004\u2014butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
       "scentNotes": [
         "Rose",
         "Carnation",
@@ -436,30 +436,6 @@
           "stock": 999
         }
       ]
-    },
-    {
-      "id": "test",
-      "name": "TEst",
-      "slug": "test",
-      "collection": "special",
-      "price": 30,
-      "stock": 0,
-      "description": "Test",
-      "scentNotes": [
-        "Test"
-      ],
-      "burnTime": "50-70 hours",
-      "wax": "Vegan soy blend",
-      "sizes": [
-        {
-          "name": "Living Room Size",
-          "size": "20 oz",
-          "price": 0.2,
-          "stock": 5
-        }
-      ],
-      "featured": false,
-      "badge": "Test!"
     }
   ]
 }
