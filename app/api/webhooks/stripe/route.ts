@@ -287,20 +287,25 @@ export async function POST(request: Request) {
 
       console.log('📝 Order data prepared:', orderData.orderId);
 
-      // Send emails (don't block on this)
-      Promise.all([
-        sendCustomerConfirmation(orderData),
-        sendBusinessNotification(orderData),
-      ]).then(([customerSent, businessSent]) => {
+      // Send emails - MUST await on serverless or function terminates early
+      let customerSent = false;
+      let businessSent = false;
+      
+      try {
+        [customerSent, businessSent] = await Promise.all([
+          sendCustomerConfirmation(orderData),
+          sendBusinessNotification(orderData),
+        ]);
         console.log(`📧 Emails sent: Customer=${customerSent}, Business=${businessSent}`);
-      }).catch(err => {
-        console.error('📧 Email error:', err);
-      });
+      } catch (emailError) {
+        console.error('📧 Email sending error:', emailError);
+      }
 
       return NextResponse.json({ 
         received: true, 
         orderId: orderData.orderId,
-        message: 'Order processed and emails sent',
+        message: 'Order processed',
+        emailsSent: { customer: customerSent, business: businessSent },
       });
 
     } catch (error) {
