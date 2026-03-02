@@ -7,7 +7,7 @@
       "collection": "special",
       "price": 30,
       "stock": 2,
-      "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004\u2014butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
+      "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004—butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
       "scentNotes": [
         "Rose",
         "Carnation",
@@ -86,7 +86,7 @@
       "slug": "palm-springs",
       "collection": "pride",
       "price": 30,
-      "stock": 3,
+      "stock": 6,
       "description": "This West Coast desert town has one of the best pride celebrations in the country, and our blend of citrus, agave, aloe, jasmine, violet, cedar, powder, and light musk burns great after spending a long day sunbathing by the pool.",
       "scentNotes": [
         "Ozone",
@@ -111,13 +111,13 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 1
+          "stock": 5
         },
         {
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 45,
-          "stock": 2
+          "stock": 1
         }
       ]
     },
