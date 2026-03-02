@@ -6,7 +6,7 @@
       "slug": "ma",
       "collection": "special",
       "price": 30,
-      "stock": 2,
+      "stock": 9,
       "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004—butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
       "scentNotes": [
         "Rose",
@@ -25,7 +25,7 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 1
+          "stock": 8
         },
         {
           "name": "Living Room Size",
