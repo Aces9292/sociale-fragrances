@@ -357,7 +357,7 @@
       "slug": "boyfriend-bundle",
       "collection": "boyfriend",
       "price": 75,
-      "stock": 6,
+      "stock": 3,
       "description": "Try all 3 at a discounted rate! Includes Hipster, Bro, and Ivy Leaguer. Zero commitment required.",
       "scentNotes": [
         "Variety Pack"
@@ -375,7 +375,7 @@
           "name": "Bedroom Size (12 oz each)",
           "size": "36 oz total",
           "price": 75,
-          "stock": 6
+          "stock": 3
         },
         {
           "name": "Living Room Size (20 oz each)",
