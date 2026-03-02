@@ -5,11 +5,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { getProductImage } from '@/lib/images';
+import DiscountCodeInput from '@/components/DiscountCodeInput';
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
+  const [discountCode, setDiscountCode] = useState('');
+
+  const handleApplyDiscount = (discountAmount: number, code: string) => {
+    setDiscount(discountAmount);
+    setDiscountCode(code);
+  };
+
+  const handleRemoveDiscount = () => {
+    setDiscount(0);
+    setDiscountCode('');
+  };
+
+  const finalTotal = Math.max(0, totalPrice - discount);
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -29,6 +44,8 @@ export default function CartPage() {
             quantity: item.quantity,
             image: item.image,
           })),
+          discountCode: discountCode || undefined,
+          discountAmount: discount > 0 ? discount : undefined,
         }),
       });
 
@@ -125,17 +142,37 @@ export default function CartPage() {
 
         {/* Cart Summary */}
         <div className="bg-gray-50 rounded-lg p-8">
+          {/* Discount Code Input */}
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <DiscountCodeInput
+              subtotal={totalPrice}
+              onApply={handleApplyDiscount}
+              onRemove={handleRemoveDiscount}
+              appliedCode={discountCode}
+              appliedDiscount={discount}
+            />
+          </div>
+
           <div className="flex justify-between mb-4">
             <span className="text-gray-600">Subtotal ({totalItems} items)</span>
             <span className="font-medium">${totalPrice.toFixed(2)}</span>
           </div>
+          
+          {discount > 0 && (
+            <div className="flex justify-between mb-4 text-green-600">
+              <span>Discount ({discountCode})</span>
+              <span className="font-medium">-${discount.toFixed(2)}</span>
+            </div>
+          )}
+          
           <div className="flex justify-between mb-4">
             <span className="text-gray-600">Shipping</span>
             <span className="text-green-600">Calculated at checkout</span>
           </div>
+          
           <div className="flex justify-between mb-8 pt-4 border-t border-gray-200">
             <span className="font-serif text-lg">Estimated Total</span>
-            <span className="font-serif text-lg">${totalPrice.toFixed(2)}</span>
+            <span className="font-serif text-lg">${finalTotal.toFixed(2)}</span>
           </div>
 
           {error && (
