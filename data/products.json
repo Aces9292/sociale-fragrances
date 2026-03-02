@@ -168,7 +168,7 @@
       "slug": "provincetown",
       "collection": "pride",
       "price": 30,
-      "stock": 4,
+      "stock": 6,
       "description": "Provincetown summers at the tip of Cape Cod are something special, and this blend of pineapple, spearmint, saffron, incense, coconut, and patchouli smells like a bonfire on Race Point beach.",
       "scentNotes": [
         "Pineapple",
@@ -192,13 +192,13 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 2
+          "stock": 5
         },
         {
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 45,
-          "stock": 2
+          "stock": 1
         }
       ]
     },
