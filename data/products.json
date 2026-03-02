@@ -127,7 +127,7 @@
       "slug": "asbury-park",
       "collection": "pride",
       "price": 30,
-      "stock": 1,
+      "stock": 6,
       "description": "This combination of lime, chili pepper, cucumber, honeydew, cantaloupe, mandarin, guava, aloe, bamboo, and peppercorn smells like a spicy marg from one of the many LGBT-owned bars and restaurants in town.",
       "scentNotes": [
         "Lime",
@@ -152,7 +152,7 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 0
+          "stock": 5
         },
         {
           "name": "Living Room Size",
