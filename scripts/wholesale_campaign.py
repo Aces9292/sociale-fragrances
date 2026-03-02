@@ -140,11 +140,12 @@ PROSPECTS = [
     }
 ]
 
-def send_email(to_email, subject, body, prospect_name=""):
+def send_email(to_email, subject, body, prospect_name="", store_name=""):
     """Send email via Gmail API"""
     
     # Personalize body
     personalized_body = body.replace("{{first_name}}", prospect_name if prospect_name else "there")
+    personalized_body = personalized_body.replace("{{store_name}}", store_name if store_name else "your store")
     
     # Create email
     email_content = f"""From: {SENDER_NAME} <{SENDER_EMAIL}>
@@ -175,36 +176,38 @@ Subject: {subject}
     except Exception as e:
         return False, str(e)
 
-# Email 1 Template
-EMAIL_1_SUBJECT = "Handmade in Litchfield County - SOCIALE Fragrances"
+# Email 1 Template - Authentic Alex Voice
+EMAIL_1_SUBJECT = "Candles that tell stories (not boring ones)"
 
-EMAIL_1_BODY = """Hi {{first_name}},
+EMAIL_1_BODY = """Hey {{first_name}},
 
-I'm reaching out because your store has the exact aesthetic that resonates with SOCIALE Fragrances customers.
+Full disclosure: I'm not great at sales emails. But I'm really good at making candles, and I'm hoping {{store_name}} might be a good home for them.
 
-We're a handmade candle company based in Litchfield, Connecticut (06798), crafting artisanal home fragrances that bridge elevated luxury with authentic local craftsmanship. Our "Ma" collection - launching for Mother's Day 2026 - represents a moment of pause, balance, and intentional living.
+Here's the thing: I started SOCIALE in my basement in Litchfield, CT back in 2021. No investors. No fancy backing. Just me, some soy wax, and a belief that candles should actually smell good without giving you a headache. (No synthetic garbage. No paraffin. Just clean ingredients that burn slow.)
 
-Why this matters for you:
-• 50% wholesale margins (keystone pricing)
-• $16 wholesale / $32 retail for our signature 12oz candles
-• Connecticut-made products your customers actively seek
-• Repeat purchase rate of 60%+ (candles are consumable!)
+Fast forward to now, and we've got collections that tell stories:
+• The "Ma" collection for millennial moms who wore Love Spell in 2004 and became their mothers (it's a compliment, trust us)
+• Pride Collection celebrating the places that shaped LGBTQ+ history
+• Boyfriend Collection because sometimes you just need a candle that gets the joke
 
-Our terms:
-- Opening order: $150 minimum
-- Reorders: $100 minimum
-- Net 30 payment terms
-- Free shipping on orders over $250
+Why I'm reaching out to {{store_name}} specifically: Your place has the vibe. The curated, "this actually means something" energy that our customers get. We're not trying to be in every big-box store. We want to be in the shops where people discover something real.
 
-Would you be open to a 10-minute conversation about how SOCIALE could complement your curation?
+The boring business stuff (because I know you need it):
+• 50% margins ($16 wholesale / $32 retail)
+• $150 minimum opening order
+• Net 30, free shipping over $250
+• Connecticut-made, hand-poured in small batches
 
-Best,
+Honestly? I'd rather just send you a candle and let it speak for itself. If you like it, we can talk. If not, no hard feelings.
+
+What do you think? Worth a shot?
+
 Alex
 Founder, SOCIALE Fragrances
 alex@socialefragrances.com
 860-488-4947
 
-P.S. I can send our wholesale line sheet with full product details.
+P.S. - Our "Ma" candle is launching for Mother's Day and honestly? It's really good. Just saying.
 """
 
 def run_campaign(batch_size=5):
@@ -228,7 +231,8 @@ def run_campaign(batch_size=5):
             prospect['email'],
             EMAIL_1_SUBJECT,
             EMAIL_1_BODY,
-            prospect.get('name', '')
+            prospect.get('name', ''),
+            prospect.get('store', '')
         )
         
         if success:
