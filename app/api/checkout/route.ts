@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     // Create Stripe Checkout Session
     const stripe = getStripe();
-    const session = await stripe.checkout.sessions.create({
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
@@ -100,7 +100,9 @@ export async function POST(request: Request) {
       metadata: {
         source: 'socialefragrances.com',
       },
-    });
+    };
+    
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     return NextResponse.json({ 
       sessionId: session.id,
