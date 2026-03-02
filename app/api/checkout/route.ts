@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { validateDiscountCode } from '@/lib/discounts';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2023-10-16' as any,
@@ -15,13 +16,27 @@ interface CartItem {
 
 export async function POST(request: Request) {
   try {
-    const { items, successUrl, cancelUrl } = await request.json();
+    const { items, successUrl, cancelUrl, discountCode, discountAmount } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json(
         { error: 'Cart is empty' },
         { status: 400 }
       );
+    }
+
+    // Calculate subtotal
+    const subtotal = items.reduce((sum: number, item: CartItem) => 
+      sum + (item.price * item.quantity), 0
+    );
+
+    // Validate discount if provided
+    let finalDiscount = 0;
+    if (discountCode && discountAmount) {
+      const validation = validateDiscountCode(discountCode, subtotal);
+      if (validation.valid && validation.discount === discountAmount) {
+        finalDiscount = discountAmount;
+      }
     }
 
     // Create line items for Stripe
@@ -36,6 +51,20 @@ export async function POST(request: Request) {
       },
       quantity: item.quantity,
     }));
+
+    // Add discount as a line item if applicable
+    if (finalDiscount > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `Discount (${discountCode})`,
+          },
+          unit_amount: -Math.round(finalDiscount * 100), // Negative for discount
+        },
+        quantity: 1,
+      });
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
