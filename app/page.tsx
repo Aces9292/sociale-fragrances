@@ -25,8 +25,8 @@ const heroImages = [
     alt: 'SOCIALE Ma Candle - Y2K Nostalgia with Furbys',
   },
   {
-    src: '/images/campaign/sociale-ma-mom-life.jpg',
-    alt: 'SOCIALE Ma - Soccer Mom Life with Planner & Memories',
+    src: '/images/campaign/ma-pink-car.jpg',
+    alt: 'SOCIALE Ma - Millennial Mom Life with Pink VW Beetle',
   },
   {
     src: '/images/campaign/furby-flat-lay-y2k.jpg',
