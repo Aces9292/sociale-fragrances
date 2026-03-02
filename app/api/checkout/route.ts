@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Lazy initialization to avoid build-time errors
-function getStripe() {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new Error('STRIPE_SECRET_KEY not configured');
-  }
-  return new Stripe(key);
-}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+  apiVersion: '2023-10-16' as any,
+});
 
 interface CartItem {
   name: string;
@@ -30,35 +25,31 @@ export async function POST(request: Request) {
     }
 
     // Create line items for Stripe
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item: CartItem) => ({
+    const lineItems = items.map((item: CartItem) => ({
       price_data: {
         currency: 'usd',
         product_data: {
           name: `${item.name} - ${item.size}`,
-          // Only include image if it's a full URL
           ...(item.image?.startsWith('http') ? { images: [item.image] } : {}),
         },
-        unit_amount: Math.round(item.price * 100), // Stripe uses cents
+        unit_amount: Math.round(item.price * 100),
       },
       quantity: item.quantity,
     }));
 
-    // Create Stripe Checkout Session
-    const stripe = getStripe();
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
       success_url: successUrl || `https://socialefragrances.com/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `https://socialefragrances.com/cart`,
-      billing_address_collection: 'required',
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
       shipping_options: [
         {
           shipping_rate_data: {
-            type: 'fixed_amount',
+            type: 'fixed_amount' as const,
             fixed_amount: {
               amount: 0,
               currency: 'usd',
@@ -66,43 +57,18 @@ export async function POST(request: Request) {
             display_name: 'Free Shipping',
             delivery_estimate: {
               minimum: {
-                unit: 'business_day',
+                unit: 'business_day' as const,
                 value: 5,
               },
               maximum: {
-                unit: 'business_day',
+                unit: 'business_day' as const,
                 value: 7,
               },
             },
           },
         },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: {
-              amount: 999,
-              currency: 'usd',
-            },
-            display_name: 'Express Shipping',
-            delivery_estimate: {
-              minimum: {
-                unit: 'business_day',
-                value: 2,
-              },
-              maximum: {
-                unit: 'business_day',
-                value: 3,
-              },
-            },
-          },
-        },
       ],
-      metadata: {
-        source: 'socialefragrances.com',
-      },
-    };
-    
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    });
 
     return NextResponse.json({ 
       sessionId: session.id,
@@ -112,7 +78,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Checkout error:', error);
     return NextResponse.json(
-      { error: 'Failed to create checkout session', details: String(error) },
+      { error: 'Failed to create checkout session' },
       { status: 500 }
     );
   }
