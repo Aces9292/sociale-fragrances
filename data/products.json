@@ -322,7 +322,7 @@
       "slug": "ivy-leaguer",
       "collection": "boyfriend",
       "price": 30,
-      "stock": 4,
+      "stock": 6,
       "description": "Does your ideal man have a collection of books that are just as impressive as his looks? Do you spend more time at the library than at the bar? For brainiacs and those that love them, this candle is a blend of cedar, sandalwood, amyris, patchouli, saffron, plum, amber, and cardamom.",
       "scentNotes": [
         "Cedar",
@@ -341,13 +341,13 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 1
+          "stock": 5
         },
         {
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 45,
-          "stock": 3
+          "stock": 1
         }
       ]
     },
