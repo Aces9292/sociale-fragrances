@@ -43,7 +43,7 @@
       "slug": "fire-island",
       "collection": "pride",
       "price": 30,
-      "stock": 4,
+      "stock": 5,
       "description": "Fire Island is a gay summer staple, and this blend of marine, ylang ylang, camphor, palm, jasmine, sandalwood, amber, and bamboo smells like a group of housemates walking to tea dance in the fresh ocean air.",
       "scentNotes": [
         "Ylang Ylang",
@@ -70,13 +70,13 @@
           "name": "Bedroom Size",
           "size": "12 oz",
           "price": 30,
-          "stock": 2
+          "stock": 4
         },
         {
           "name": "Living Room Size",
           "size": "20 oz",
           "price": 45,
-          "stock": 2
+          "stock": 1
         }
       ]
     },
