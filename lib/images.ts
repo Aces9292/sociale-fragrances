@@ -47,7 +47,7 @@ const productAltImages: Record<string, string[]> = {
 // Collection hero images (Real Product Photos)
 const collectionImages: Record<string, string> = {
   'pride': '/images/products/pride-collection-four-candles.jpg',
-  'boyfriend': '/images/products/boyfriend-bundle-three.jpg',
+  'boyfriend': '/images/boyfriend-collection-new.png',
 };
 
 // Lifestyle/brand images
