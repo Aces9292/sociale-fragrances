@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import ScrollProgress from '@/components/ScrollProgress';
+import CartButton from '@/components/CartButton';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,7 +56,7 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-10">
-            {['Shop', 'About', 'Contact', 'Cart'].map((item) => (
+            {['Shop', 'About', 'Contact'].map((item) => (
               <Link 
                 key={item}
                 href={`/${item.toLowerCase()}`} 
@@ -64,6 +65,7 @@ export default function Header() {
                 {item}
               </Link>
             ))}
+            <CartButton />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -111,7 +113,7 @@ export default function Header() {
             transition={{ duration: 0.3 }}
           >
             <nav className="flex flex-col items-center gap-8">
-              {['Shop', 'About', 'Contact', 'Cart'].map((item, index) => (
+              {['Shop', 'About', 'Contact'].map((item, index) => (
                 <motion.div
                   key={item}
                   initial={{ opacity: 0, y: 20 }}
@@ -128,6 +130,15 @@ export default function Header() {
                   </Link>
                 </motion.div>
               ))}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+                onClick={() => setMenuOpen(false)}
+              >
+                <CartButton />
+              </motion.div>
             </nav>
           </motion.div>
         )}
