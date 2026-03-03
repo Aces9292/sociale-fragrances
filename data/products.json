@@ -7,7 +7,7 @@
       "collection": "special",
       "price": 30,
       "stock": 9,
-      "description": "The Mother's Day gift she didn't know she needed. One whiff and she's back in 2004—butterfly clips, flip phone, the works. Limited batch. Don't let her miss this.",
+      "description": "Remember your bedroom in 2003?\n\nThe Lip Smackers lined up on your dresser. The Furby in the corner that wouldn't shut up. The pink Razr phone you begged for. That body spray you wore every. single. day.\n\nYour mom would sigh when you sprayed it. \"That's too much,\" she'd say.\n\nPlot twist: You're the mom now.\n\nMillennial Ma is for that girl — and the woman she became. One whiff and you're back. The butterfly clips. The low-rise jeans. The away messages on AIM.\n\nWe hand-pour every candle in small batches. Because mass production doesn't smell like nostalgia.",
       "scentNotes": [
         "Rose",
         "Carnation",
@@ -23,14 +23,14 @@
       "sizes": [
         {
           "name": "Bedroom Size",
-          "size": "12 oz",
-          "price": 30,
+          "size": "12 oz silver tumbler",
+          "price": 32,
           "stock": 8
         },
         {
           "name": "Living Room Size",
-          "size": "20 oz",
-          "price": 45,
+          "size": "20 oz black 3-wick",
+          "price": 49,
           "stock": 1
         }
       ],

@@ -6,13 +6,20 @@ import { Providers } from '@/components/Providers';
 
 
 export const metadata: Metadata = {
-  title: 'SOCIALE | Handcrafted Candles',
-  description: 'Natural soy wax candles. Handcrafted in Connecticut.',
-  keywords: ['candles', 'soy candles', 'luxury candles', 'handcrafted', 'Connecticut'],
+  title: 'Millennial Ma | Nostalgia Candles for Millennial Moms | SOCIALE',
+  description: 'Hand-poured nostalgia for the teens we were and the moms we are. Shop the Millennial Ma collection — artisanal candles with Y2K soul.',
+  keywords: ['millennial mom gifts', 'nostalgia candles', 'Y2K gifts', 'mother\'s day candles', 'millennial candles', 'soy candles', 'handcrafted candles', 'Connecticut'],
   openGraph: {
-    title: 'SOCIALE | Handcrafted Candles',
-    description: 'Natural soy wax candles. Handcrafted in Connecticut.',
+    title: 'Millennial Ma | Nostalgia Candles for Millennial Moms | SOCIALE',
+    description: 'Hand-poured nostalgia for the teens we were and the moms we are. Shop the Millennial Ma collection — artisanal candles with Y2K soul.',
     type: 'website',
+    images: ['/images/campaign/ma-pink-car.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Millennial Ma | Nostalgia Candles | SOCIALE',
+    description: 'For the teens we were. And the moms we are.',
+    images: ['/images/campaign/ma-pink-car.jpg'],
   },
 };
 

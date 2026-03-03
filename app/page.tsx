@@ -15,15 +15,8 @@ import { SuccessAnimation } from '@/components/LoadingScreen';
 
 
 // Hero images for carousel rotation - Premium campaign shots
+// Lead with the pink VW Beetle - the hero image for Millennial Ma campaign
 const heroImages = [
-  {
-    src: '/images/campaign/mom-morning-routine.jpg',
-    alt: 'SOCIALE Millennial Ma - Mom Morning Routine with Coffee & Baby Monitor',
-  },
-  {
-    src: '/images/campaign/sociale-ma-real-y2k.jpg',
-    alt: 'SOCIALE Ma Candle - Y2K Nostalgia with Furbys',
-  },
   {
     src: '/images/campaign/ma-pink-car.jpg',
     alt: 'SOCIALE Ma - Millennial Mom Life with Pink VW Beetle',
@@ -31,6 +24,14 @@ const heroImages = [
   {
     src: '/images/campaign/furby-flat-lay-y2k.jpg',
     alt: 'SOCIALE Ma - Ultimate Y2K Collection with Furbys & Lip Smackers',
+  },
+  {
+    src: '/images/campaign/mom-morning-routine.jpg',
+    alt: 'SOCIALE Millennial Ma - Mom Morning Routine with Coffee & Baby Monitor',
+  },
+  {
+    src: '/images/campaign/sociale-ma-real-y2k.jpg',
+    alt: 'SOCIALE Ma Candle - Y2K Nostalgia with Furbys',
   },
 ];
 
@@ -88,33 +89,35 @@ export default function HomePage() {
             transition={{ delay: 0.5, duration: 0.6 }}
             className="block text-white uppercase-label mb-8 text-shadow"
           >
-            Mother's Day 2026
+            The Millennial Ma Collection
           </motion.span>
 
-          {/* MASSIVE headline with split text animation */}
-          <SplitText
-            text="MA"
-            as="h1"
-            className="text-hero text-white font-serif text-shadow-strong"
-            charDelay={0.1}
-            duration={0.8}
-          />
-
-          {/* Subtitle with word-by-word reveal */}
-          <div className="mt-8 space-y-2">
+          {/* MASSIVE headline - the campaign tagline */}
+          <div className="space-y-2">
             <SplitWords
-              text="that iconic body spray, all grown up."
-              as="p"
-              className="text-medium text-white/90 font-serif text-shadow"
-              startDelay={0.6}
-              wordDelay={0.1}
+              text="For the teens we were."
+              as="h1"
+              className="text-title md:text-display text-white font-serif text-shadow-strong"
+              startDelay={0.3}
+              wordDelay={0.12}
             />
             <SplitWords
-              text="For the moms who survived Y2K."
+              text="And the moms we are."
+              as="h1"
+              className="text-title md:text-display text-white font-serif text-shadow-strong"
+              startDelay={0.8}
+              wordDelay={0.12}
+            />
+          </div>
+
+          {/* Subtitle with word-by-word reveal */}
+          <div className="mt-8">
+            <SplitWords
+              text="Nostalgia you can burn."
               as="p"
-              className="text-body-large text-white/80 font-serif text-shadow"
-              startDelay={1.0}
-              wordDelay={0.08}
+              className="text-medium text-white/90 font-serif text-shadow"
+              startDelay={1.4}
+              wordDelay={0.1}
             />
           </div>
 
@@ -122,7 +125,7 @@ export default function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
+            transition={{ delay: 2.0, duration: 0.6 }}
             className="mt-12"
           >
             <MagneticButton 
@@ -131,7 +134,7 @@ export default function HomePage() {
               size="large"
               className="bg-white/95 backdrop-blur-sm"
             >
-              Pre-Order Now
+              Shop the Collection
             </MagneticButton>
           </motion.div>
         </motion.div>
@@ -187,35 +190,34 @@ export default function HomePage() {
 
                 <StaggerItem>
                   <p className="text-body-large leading-relaxed mb-6 text-black/80">
-                    OMG. Remember that iconic body spray?
+                    Remember your bedroom in 2003?
                   </p>
                 </StaggerItem>
 
                 <StaggerItem>
                   <p className="text-body leading-relaxed mb-6 text-black/70">
-                    That Bath & Body Works scent you wore every. single. day.
-                    You'd spray it before school. Your mom would complain about the smell.
+                    The Lip Smackers. The Furbys. The pink Razr phone you begged for.
+                    That body spray your mom would sigh about. "That's too much," she'd say.
                   </p>
                 </StaggerItem>
 
                 <StaggerItem>
                   <p className="text-body leading-relaxed mb-8 text-black/70">
-                    Fast forward 20 years. Plot twist: <em>You're the mom now.</em>
+                    Plot twist: <em>You're the mom now.</em> And honestly? You get it.
                   </p>
                 </StaggerItem>
 
                 <StaggerItem>
                   <div className="space-y-1 mb-8 text-small text-black/50 uppercase tracking-widest">
-                    <p>That scent from 2004 · You know the one</p>
-                    <p>Vanilla · Warm, cozy, grown-up</p>
-                    <p>60 hours of pure nostalgia</p>
+                    <p>Two sizes · Because your bedroom then was different from your living room now</p>
+                    <p>Hand-poured · Small batches · Real nostalgia</p>
                   </div>
                 </StaggerItem>
 
                 <StaggerItem>
-                  <p className="text-large font-serif mb-2">$30</p>
+                  <p className="text-large font-serif mb-2">From $32</p>
                   <p className="text-tiny uppercase tracking-[0.2em] text-black/50 mb-8">
-                    Pre-Order for Mother's Day
+                    Ships in time for Mother's Day
                   </p>
                 </StaggerItem>
 
@@ -374,24 +376,25 @@ export default function HomePage() {
         <div className="max-w-text mx-auto px-6 text-center">
           <ScrollReveal>
             <p className="text-large md:text-title font-serif leading-[1.4]">
-              Natural soy wax.
+              We hand-pour every candle.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.15}>
             <p className="text-large md:text-title font-serif leading-[1.4]">
-              Essential oils.
+              Natural soy wax. Essential oils.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.3}>
             <p className="text-large md:text-title font-serif leading-[1.4]">
-              Handcrafted in Connecticut.
+              Made in Connecticut by people who actually care.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.5}>
             <p className="text-body text-black/60 mt-12 max-w-[400px] mx-auto leading-relaxed">
-              We make candles that tell stories—scents inspired by the places 
-              and people that shaped us. No filler. No pretense. Just light.
+              We're not a corporate candle factory. We're the friend who texts you
+              "OMG remember that smell?" and then actually makes it for you.
+              No filler. No pretense. Just scents that tell stories.
             </p>
           </ScrollReveal>
 
@@ -410,13 +413,14 @@ export default function HomePage() {
         <div className="max-w-[500px] mx-auto px-6 text-center">
           <ScrollReveal>
             <span className="text-tiny uppercase-label block mb-6 tracking-[0.25em] text-black/50">
-              Stay in the loop
+              Don't miss the drop
             </span>
             <h2 className="text-large font-serif mb-8">
-              Join the Inner Circle
+              Get 15% off your first order
             </h2>
             <p className="text-body text-black/60 mb-10">
-              Early access, exclusive drops, and stories from behind the scenes.
+              Plus early access to new scents and the stories behind them.
+              We promise not to be annoying.
             </p>
           </ScrollReveal>
 

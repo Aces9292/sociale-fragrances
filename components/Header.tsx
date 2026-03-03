@@ -56,15 +56,24 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-10">
-            {['Shop', 'About', 'Contact'].map((item) => (
-              <Link 
-                key={item}
-                href={`/${item.toLowerCase()}`} 
-                className="text-[13px] uppercase tracking-[0.15em] link-underline text-black"
-              >
-                {item}
-              </Link>
-            ))}
+            <Link 
+              href="/shop" 
+              className="text-[13px] uppercase tracking-[0.15em] link-underline text-black"
+            >
+              The Candles
+            </Link>
+            <Link 
+              href="/about" 
+              className="text-[13px] uppercase tracking-[0.15em] link-underline text-black"
+            >
+              Our Story
+            </Link>
+            <Link 
+              href="/contact" 
+              className="text-[13px] uppercase tracking-[0.15em] link-underline text-black"
+            >
+              Contact
+            </Link>
             <CartButton />
           </nav>
 
@@ -113,20 +122,24 @@ export default function Header() {
             transition={{ duration: 0.3 }}
           >
             <nav className="flex flex-col items-center gap-8">
-              {['Shop', 'About', 'Contact'].map((item, index) => (
+              {[
+                { label: 'The Candles', href: '/shop' },
+                { label: 'Our Story', href: '/about' },
+                { label: 'Contact', href: '/contact' },
+              ].map((item, index) => (
                 <motion.div
-                  key={item}
+                  key={item.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ delay: index * 0.1, duration: 0.4 }}
                 >
                   <Link
-                    href={`/${item.toLowerCase()}`}
+                    href={item.href}
                     className="text-title font-serif"
                     onClick={() => setMenuOpen(false)}
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </motion.div>
               ))}

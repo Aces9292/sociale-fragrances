@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import { getBrandImage } from '@/lib/images';
 
 export const metadata: Metadata = {
-  title: 'About | SOCIALE',
-  description: 'Natural soy wax candles handcrafted in Connecticut. Est. when millennials grew up.',
+  title: 'Our Story | SOCIALE',
+  description: 'Natural soy wax candles handcrafted in Connecticut. For the teens we were and the moms we are.',
 };
 
 export default function AboutPage() {
@@ -12,7 +12,7 @@ export default function AboutPage() {
     <div className="bg-white py-4xl">
       <div className="max-w-text mx-auto px-md">
         {/* Title */}
-        <h1 className="text-title font-serif text-center mb-3xl">About</h1>
+        <h1 className="text-title font-serif text-center mb-3xl">Our Story</h1>
 
         {/* Content */}
         <div className="space-y-xl text-body">

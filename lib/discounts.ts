@@ -16,7 +16,7 @@ export interface DiscountCode {
 import discountsData from '@/data/discounts.json';
 
 // Default discount codes from JSON
-let DISCOUNT_CODES: DiscountCode[] = discountsData.discounts;
+let DISCOUNT_CODES: DiscountCode[] = discountsData.discounts as DiscountCode[];
 
 // Get current discount codes
 export function getDiscountCodes(): DiscountCode[] {
