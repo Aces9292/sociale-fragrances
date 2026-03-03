@@ -115,7 +115,7 @@ export default function OrdersAdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'sociale2026') {
+    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       setAuthenticated(true);
     } else {
       showMessage('Wrong password', 'error');
