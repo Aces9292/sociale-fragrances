@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import EmailPopup from '@/components/EmailPopup';
 import { Providers } from '@/components/Providers';
 
 
@@ -36,6 +37,7 @@ export default function RootLayout({
           <main className="flex-1">
             {children}
           </main>
+          <EmailPopup />
           <Footer />
         </Providers>
       </body>
